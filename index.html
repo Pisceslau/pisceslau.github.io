@@ -3,7 +3,7 @@
 
 <!-- Head tag -->
 <head>
-    <meta charset="utf-8">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,14 +49,14 @@
     <![endif]-->
 
     <!-- ga & ba script hoook -->
-    <script></script>
+    <script></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 
 <!-- hack iOS CSS :active style -->
 <body ontouchstart="">
 
-    <!-- Navigation -->
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- Navigation -->
 <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -131,7 +131,7 @@
                 <div class="site-heading">
                     <h1>Warren Liu&#39;s Blog</h1>
                     <!--<hr class="small">-->
-                    <span class="subheading">吟无用之诗，醉无用之酒，读无用之书，钟无用之情。</span>
+                    <span class="subheading">直到相思了无益，未妨惆怅是清狂。</span>
                 </div>
             </div>
         </div>
@@ -157,6 +157,59 @@
             
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2016/09/03/剑指Offer-面试题37-两个链表的第一个公共结点/">
+        <h2 class="post-title">
+            剑指Offer-面试题37-两个链表的第一个公共结点
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            昨日在58的笔试上遇到了剑指Offer的面试题37，特此复习一番。
+题目：输入两个链表，找出它们的第一个公共结点。
+思路：​    一、 可以利用栈的特点来解决
+1. 分别把两个链表的结点放入两个栈里，于是尾结点就是位于两个栈的栈顶了。
+2. 比较二个栈顶的结点是否相同，如果相同则把栈顶结点弹出，接着比，直到找到最后一个相同的结点。
+   二、 比较链表长度法
+
+首先比较两条链表的长度，得到......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Warren Liu on
+        2016-09-03
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/09/03/剑指Offer-面试题44-扑克牌的顺子/">
+        <h2 class="post-title">
+            剑指Offer-面试题44-扑克牌的顺子
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            ​    昨日做了58同城的笔试题，里面涉及到了《剑指Offer》的题目，其中有一个就是面试题44：扑克牌的顺子，现复习一番。
+题目：​    从扑克牌中随机抽5张牌，判断是不是一个顺子， 即这5张牌是不是连续的。2～10为数字本身， A为1。 J为11、Q为12、 为13。大、小王可以看成任意数字。
+思路：
+把大小王都当做0，用于补充空缺。
+排序后的数组若不连续，相邻的数字隔若干个数字，统......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Warren Liu on
+        2016-09-03
+    </p>
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -289,9 +342,11 @@ back键：onPause-&gt;onStop-&gt;onDestroy
                             
                         
                             
+                            <a href="/tags/#剑指Offer" title="剑指Offer" rel="3">剑指Offer</a>
+                            
                         
                             
-                            <a href="/tags/#算法" title="算法" rel="2">算法</a>
+                            <a href="/tags/#算法" title="算法" rel="4">算法</a>
                             
                         
                             
@@ -310,7 +365,7 @@ back键：onPause-&gt;onStop-&gt;onDestroy
                     <div class="short-about">
 
                         
-                            <img src="/img/avatar.jpg" />
+                            <img src="/img/avatar.jpg# use absolute URL, seeing it&#39;s used in both `/` and `/about/`" />
                         
 
                         
@@ -534,7 +589,24 @@ back键：onPause-&gt;onStop-&gt;onDestroy
 
 <!-- Image to hack wechat -->
 <img src="http://wenyueliu.com/img/icon_wechat.png" width="0" height="0" />
-<!-- Migrate from head to bottom, no longer block render and still work -->
+<!-- Migrate from head to bottom, no longer block render and still work --><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 
 </body>
 

@@ -13,11 +13,11 @@
 
     <title>
         
-          Android Activity再学习(Activity生命周期,启动模式,Intent Filter匹配) - 文月的博客 | Warren Liu&#39;s Blog
+          剑指Offer-面试题44-扑克牌的顺子 - 文月的博客 | Warren Liu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://wenyueliu.com/2016/08/30/Android-Activity再学习/">
+    <link rel="canonical" href="http://wenyueliu.com/2016/09/03/剑指Offer-面试题44-扑克牌的顺子/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -141,16 +141,16 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                          <a class="tag" href="/tags/#剑指Offer" title="剑指Offer">剑指Offer</a>
                         
-                          <a class="tag" href="/tags/#读书笔记" title="读书笔记">读书笔记</a>
+                          <a class="tag" href="/tags/#算法" title="算法">算法</a>
                         
                     </div>
-                    <h1>Android Activity再学习(Activity生命周期,启动模式,Intent Filter匹配)</h1>
+                    <h1>剑指Offer-面试题44-扑克牌的顺子</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Warren Liu on
-                        2016-08-30
+                        2016-09-03
                     </span>
                 </div>
             </div>
@@ -169,37 +169,17 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>本文参考了任玉刚前辈的《Android开发艺术探索》  一书，可以说是该书相关内容的读书笔记。</p>
-<h3 id="（一）-Activity生命周期："><a href="#（一）-Activity生命周期：" class="headerlink" title="（一） Activity生命周期："></a>（一） Activity生命周期：</h3><p>正常启动：onCreate-&gt;onStart-&gt;onResume</p>
-<p>再回到：onRestart-&gt;onStart-&gt;onResume</p>
-<p>back键：onPause-&gt;onStop-&gt;onDestroy</p>
-<p> 到桌面或者打开新的：onPause-&gt;onStop</p>
-<p>onStart，onStop：是否可见</p>
-<p>onResume，onPause着重是否位于前台</p>
-<p>栈顶Activity需要先onPause,新Activity才能启动 onPause(旧）-&gt;onCreate-&gt;onStart-&gt;onResume-&gt;onStop（旧），  所以不能再onPause中做重量级的操作，应该在onStop中做操作，从而新的Activity尽快显示出来。</p>
-<p>异常情况：</p>
-<p>(1)资源相关配置改变（如横竖屏幕）</p>
-<p>onPause与onSaveInstanceState方法顺序不定-&gt;onStop-&gt;onDestroy，onSaveInstanceState方法保存的Bundle对象传递给onRestoreInstanceState和onCreate方法，重新创建的Activity  onCreate-&gt;onStart()-&gt;onRestoreInstanceState方法 取出Bundle并恢复数据。Activity委托Window保存数据，Window委托VIewGroup（DecorView)保存，ViewGroup委托View保存数据，典型的委托思想。推荐使用onRestoreInstanceState恢复数据，因为该bundle参数一旦有值，一定非空，而onCreate 则需要判断。</p>
-<pre><code>(2)资源内存不导致优先级低的Activity被杀死
-</code></pre><p>优先级高低情况：1.前台Activity最高 2.可见非前台次之 3,.后台Activity最低。</p>
-<p>若某项内容改变我们不需要让系统重新创建Activity可指定configChanges属性，会调用onConfigurationChanged方法，我们可以做些自己的特殊处理。</p>
-<h3 id="（二）Activity的launchMode（启动模式）"><a href="#（二）Activity的launchMode（启动模式）" class="headerlink" title="（二）Activity的launchMode（启动模式）"></a>（二）Activity的launchMode（启动模式）</h3><h4 id="（1）standard"><a href="#（1）standard" class="headerlink" title="（1）standard"></a>（1）standard</h4><p>标准的默认模式，是多实例的，谁启动了该模式的Activity，该Activity便会进入启动了它的Activity的任务栈（TaskStack），相关错误：ApplicationContext启动standard的Activity报错，原因：非Activity的前者无所谓的任务栈。可以为待启动的Activity指定FLAG_ACTIVITY——NEW_TASK标志位，启动时候会为其创建一个新的任务栈（见singleTaask 模式）</p>
-<h4 id="（2）singleTop"><a href="#（2）singleTop" class="headerlink" title="（2）singleTop"></a>（2）singleTop</h4><p>栈顶复用模式：新的Activity已在栈顶，不重复创建，同时它的onNewIntent方法会被回调，onCreate，onStart不会被系统调用。存在该实例在任务栈中，但不在栈顶则还会重新创建。</p>
-<h4 id="（3）singleTask"><a href="#（3）singleTask" class="headerlink" title="（3）singleTask"></a>（3）singleTask</h4><p>栈内复用模式：activity栈内存在，就不重新创建。首先寻找任务栈是否存在，无：创建任务栈，放入启动的Activity。有：有该Activity的实例么？无：创建该Activity放入任务栈的栈顶。有：把该Activity调到栈顶并clearTop，同时onNewIntent也会回调。</p>
-<h4 id="（4）singleInstance"><a href="#（4）singleInstance" class="headerlink" title="（4）singleInstance"></a>（4）singleInstance</h4><p>单实例模式，加强版singleTask，具有singleTask 的特点，同时具有该模式的Activity单独位于一个任务栈。</p>
-<p>指定启动模式的方法：XML属性里面的launchMode属性，和Java代码里的intent。addFlags();</p>
-<h3 id="（三）Activity的Flags"><a href="#（三）Activity的Flags" class="headerlink" title="（三）Activity的Flags"></a>（三）Activity的Flags</h3><p>FLAG_ACTIVITY_NEW_TASK</p>
-<p>FLAG_ACTIVITY_SINGLE_TOP</p>
-<p>FLAG_ACTIVITY_CLEAR_TOP</p>
-<p>FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS</p>
-<h3 id="（四）Intent-Filters匹配"><a href="#（四）Intent-Filters匹配" class="headerlink" title="（四）Intent Filters匹配"></a>（四）Intent Filters匹配</h3><p>该知识点主要用于Android隐式调用Activity，需要intent可以匹配目标组件的IntentFilter中设置的过滤信息，在XML文件中的Intent-filter属性，包含action、category、data，intent-filter可以有多个，intent满足一个filter的data、action、category即可。（同时满足这三者）。那么这三者各自的匹配规则又是怎样的呢？</p>
-<p>action匹配规则：action是一个字符串形式，任何一个action相同即匹配成功</p>
-<p>category匹配规则：可以没有category，或者是一旦有category，不管有几个，每个都要与filter中任何一个category相同，系统调用startActivity和startActivityForResult自动为intent添加了DEFAULT这个category，所以这个category就可以匹配过滤规则，同时为了activity接受隐式的调用，就必须在intent-filter中添加“android.intent.category.DEFAULT”这个category。</p>
-<p>data的匹配规则：与action类似</p>
-<p>data的结构：由二部分组成URI和mimeType，后者指得是媒体类型如image/jpeg等。前者包含 scheme、port、path、pathPrefix、pathPattern</p>
-<p>分别指URI模式，主机名、URI端口号、路径信息。过滤规则没指定URI则默认为content、file。也就是说没有指定的话，intent的URI部分要有content或者file的scheme，为intent指定完整的data要使用setDataAndType方法，而不是分开的setData或者setType，以为这二个方法彼此清除对方的值（从源码可以看出是把对方的值置为空）</p>
-<p>隐式启动intent注意的地方在于：我们可以做判断看是否activity匹配我们的intent，使用PackageManager的resolveActivity方法或者intent的resolveActivity方法，找不到匹配的Activity返回null，同时，PackageManager的queryIntentActivities方法返回所有成功匹配的Activities（复数形式），前者是指最佳匹配。</p>
-<p>Android入口Activity的action为MAIN，category为LAUNCHER 缺一不可。</p>
+                <p>​    昨日做了58同城的笔试题，里面涉及到了《剑指Offer》的题目，其中有一个就是面试题44：扑克牌的顺子，现复习一番。</p>
+<h3 id="题目："><a href="#题目：" class="headerlink" title="题目："></a>题目：</h3><p>​    从扑克牌中随机抽5张牌，判断是不是一个顺子， 即这5张牌是不是连续的。2～10为数字本身， A为1。 J为11、Q为12、 为13。大、小王可以看成任意数字。</p>
+<h3 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h3><ol>
+<li>把大小王都当做0，用于补充空缺。</li>
+<li>排序后的数组若不连续，相邻的数字隔若干个数字，统计数组中的0的数目。</li>
+<li>若0可以填充（0的数目大于等于相隔的数字的数目，即numberOfZero&gt;=numberOfGap）,数组还是有序的。</li>
+<li>此外值得注意的是：非0数字重复出现则不连续。（扑克牌含有对子，则不可能是顺子了）。</li>
+</ol>
+<h3 id="参考代码："><a href="#参考代码：" class="headerlink" title="参考代码："></a>参考代码：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> Algorithm;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.Arrays;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by Lunar on 2016/3/28.</div><div class="line"> * 剑指Offer第四十四题：扑克牌的顺子</div><div class="line"> * 题目：从扑克牌中随机抽5张牌，判断是不是一个顺子，即这5张牌是不是连续的，2~10为数字本身</div><div class="line"> * ，A为1，J为11，Q为1前12，K为13，而大小王可以看做是任意数字</div><div class="line"> * 思路：首先排序，不是连续的话，看数之间相隔的若干个数字，但只要我们有足够的0就可以补满这二个数字的空缺，这个</div><div class="line"> * 数组实际上还是有序的，因为大小王可以当做是任意的数字，默认值为0</div><div class="line"> * 注意：非0的数字重复则为不是顺子</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IsContinuous</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 求是否连续的方法</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> a 输入数组</div><div class="line">     * <span class="doctag">@return</span> 是否连续</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isContinuous</span><span class="params">(<span class="keyword">int</span>[] a)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (a == <span class="keyword">null</span> || a.length &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        Arrays.sort(a);<span class="comment">//首先使用快速排序排序数组，使之成为可能有0在左侧的按顺序排序的数组</span></div><div class="line">        <span class="comment">//统计排序后的数组的0的个数</span></div><div class="line">        <span class="keyword">int</span> numberOfZero = <span class="number">0</span>;<span class="comment">//0的个数</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; a.length; i++) &#123;</div><div class="line">            <span class="keyword">if</span> (a[i] == <span class="number">0</span>) numberOfZero++;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//统计间隔的数目</span></div><div class="line">        <span class="keyword">int</span> numberOfGap = <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> left = numberOfZero;<span class="comment">//左边数下标,left就是第一个非零数的下标</span></div><div class="line">        <span class="keyword">int</span> right = left + <span class="number">1</span>;<span class="comment">//右边数的下标</span></div><div class="line"></div><div class="line">        <span class="keyword">while</span> (right &lt; a.length) &#123;</div><div class="line">            <span class="comment">//如果相等则不是顺子</span></div><div class="line">            <span class="keyword">if</span> (a[left] == a[right]) <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">            numberOfGap += a[right] - a[left] - <span class="number">1</span>;<span class="comment">//间隔几个连续数字</span></div><div class="line">            <span class="comment">//左右数右移动</span></div><div class="line">            left = right;</div><div class="line">            right++;<span class="comment">//++right也可以，因为是一行语句。</span></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> numberOfGap &lt;= numberOfZero;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span>[] a = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</div><div class="line">        System.out.println(isContinuous(a));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>其他题目代码请参考：</strong> <a href="https://github.com/Pisceslau/Algorithm/" target="_blank" rel="external">这里</a></p>
+<p><strong>转载请注明出处</strong>。</p>
 
 
                 <hr>
@@ -209,11 +189,11 @@
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="2016/08/30/Android-Activity再学习/"
-                    data-title="Android Activity再学习(Activity生命周期,启动模式,Intent Filter匹配)"
-                    data-url="http://wenyueliu.com/2016/08/30/Android-Activity再学习/"
+                    data-thread-key="2016/09/03/剑指Offer-面试题44-扑克牌的顺子/"
+                    data-title="剑指Offer-面试题44-扑克牌的顺子"
+                    data-url="http://wenyueliu.com/2016/09/03/剑指Offer-面试题44-扑克牌的顺子/"
                     data-images=""
-                    data-content="本文参考了任玉刚前辈的《Android开发艺术探索》  一书，可以说是该书相关内容的读书笔记。... | 文月的博客 | Warren Liu&#39;s Blog " >
+                    data-content="​    昨日做了58同城的笔试题，里面涉及到了《剑指Offer》的题目，其中有一个就是面试题... | 文月的博客 | Warren Liu&#39;s Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -232,9 +212,13 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2016/09/01/剑指offer-面试题3-二维数组中的查找/" data-toggle="tooltip" data-placement="top" title="剑指offer 面试题3 二维数组中的查找">&larr; Previous Post</a>
+                            <a href="/2016/09/03/剑指Offer-面试题37-两个链表的第一个公共结点/" data-toggle="tooltip" data-placement="top" title="剑指Offer-面试题37-两个链表的第一个公共结点">&larr; Previous Post</a>
                         </li>
                     
+                    
+                        <li class="next">
+                            <a href="/2016/09/02/剑指Offer面试题42：翻转单词顺序VS左旋转字符串/" data-toggle="tooltip" data-placement="top" title="剑指Offer面试题42：翻转单词顺序VS左旋转字符串">Next Post &rarr;</a>
+                        </li>
                     
                 </ul>
 
@@ -242,9 +226,9 @@
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2016/08/30/Android-Activity再学习/"
-                        data-title="Android Activity再学习(Activity生命周期,启动模式,Intent Filter匹配)"
-                        data-url="http://wenyueliu.com/2016/08/30/Android-Activity再学习/" >
+                        data-thread-key="2016/09/03/剑指Offer-面试题44-扑克牌的顺子/"
+                        data-title="剑指Offer-面试题44-扑克牌的顺子"
+                        data-url="http://wenyueliu.com/2016/09/03/剑指Offer-面试题44-扑克牌的顺子/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
@@ -270,9 +254,9 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                          <a class="tag" href="/tags/#剑指Offer" title="剑指Offer">剑指Offer</a>
                         
-                          <a class="tag" href="/tags/#读书笔记" title="读书笔记">读书笔记</a>
+                          <a class="tag" href="/tags/#算法" title="算法">算法</a>
                         
                     </div>
                 </section>
