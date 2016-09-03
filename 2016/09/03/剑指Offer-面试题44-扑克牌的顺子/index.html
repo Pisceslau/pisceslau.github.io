@@ -13,11 +13,11 @@
 
     <title>
         
-          剑指Offer面试题42：翻转单词顺序VS左旋转字符串 - 文月的博客 | Warren Liu&#39;s Blog
+          剑指Offer-面试题44-扑克牌的顺子 - 文月的博客 | Warren Liu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://wenyueliu.com/2016/09/02/剑指Offer面试题42：翻转单词顺序VS左旋转字符串/">
+    <link rel="canonical" href="http://wenyueliu.com/2016/09/03/剑指Offer-面试题44-扑克牌的顺子/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -146,11 +146,11 @@
                           <a class="tag" href="/tags/#算法" title="算法">算法</a>
                         
                     </div>
-                    <h1>剑指Offer面试题42：翻转单词顺序VS左旋转字符串</h1>
+                    <h1>剑指Offer-面试题44-扑克牌的顺子</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Warren Liu on
-                        2016-09-02
+                        2016-09-03
                     </span>
                 </div>
             </div>
@@ -169,22 +169,17 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>昨日腾讯模拟笔试题的考试编程题是这个有些生疏了，特此复习一番。</p>
-<h3 id="题目1-翻转单词顺序："><a href="#题目1-翻转单词顺序：" class="headerlink" title="题目1 翻转单词顺序："></a>题目1 翻转单词顺序：</h3><p>输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。为简单起见，标点符号和普通字母一样处理。例如输入字符串”I am a student.”， 则输出”student. a am I”</p>
+                <p>​    昨日做了58同城的笔试题，里面涉及到了《剑指Offer》的题目，其中有一个就是面试题44：扑克牌的顺子，现复习一番。</p>
+<h3 id="题目："><a href="#题目：" class="headerlink" title="题目："></a>题目：</h3><p>​    从扑克牌中随机抽5张牌，判断是不是一个顺子， 即这5张牌是不是连续的。2～10为数字本身， A为1。 J为11、Q为12、 为13。大、小王可以看成任意数字。</p>
 <h3 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h3><ol>
-<li>第一步是翻转句子中的所有字符，就是倒置。</li>
-<li>翻转每个单词中的字符（根据空格隔离单词），于是就翻转正确的单词顺序了。</li>
+<li>把大小王都当做0，用于补充空缺。</li>
+<li>排序后的数组若不连续，相邻的数字隔若干个数字，统计数组中的0的数目。</li>
+<li>若0可以填充（0的数目大于等于相隔的数字的数目，即numberOfZero&gt;=numberOfGap）,数组还是有序的。</li>
+<li>此外值得注意的是：非0数字重复出现则不连续。（扑克牌含有对子，则不可能是顺子了）。</li>
 </ol>
-<h3 id="代码如下："><a href="#代码如下：" class="headerlink" title="代码如下："></a>代码如下：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> Algorithm;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by Lunar on 2016/3/24.</div><div class="line"> * 剑指Offer第四十二题：翻转单词顺序VS左旋转字符串</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Reverse</span> </span>&#123;</div><div class="line">    <span class="comment">//子程序：翻转字符串中的一段,若begin end为0-length-1则为翻转这个长句</span></div><div class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reverse</span><span class="params">(<span class="keyword">char</span>[] chars, <span class="keyword">int</span> begin, <span class="keyword">int</span> end)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (chars == <span class="keyword">null</span> || begin &gt; end) <span class="keyword">return</span>;</div><div class="line">        <span class="keyword">while</span> (begin &lt; end) &#123;</div><div class="line">            <span class="keyword">char</span> temp = chars[begin];</div><div class="line">            chars[begin] = chars[end];</div><div class="line">            chars[end] = temp;</div><div class="line">            begin++;</div><div class="line">            end--;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//该题目算法</span></div><div class="line">    <span class="function"><span class="keyword">static</span> String <span class="title">reverseSentence</span><span class="params">(String str)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (str == <span class="keyword">null</span> || str.length() &lt;= <span class="number">0</span>) <span class="keyword">return</span> <span class="string">""</span>;</div><div class="line"></div><div class="line">        <span class="keyword">char</span>[] chars = str.toCharArray();</div><div class="line">        <span class="keyword">int</span> length = chars.length;</div><div class="line">        <span class="comment">//翻转整个句子I ma a .tneduts</span></div><div class="line"></div><div class="line">        reverse(chars, <span class="number">0</span>, length - <span class="number">1</span>);</div><div class="line">        <span class="keyword">int</span> start = <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> end = <span class="number">0</span>;</div><div class="line">        <span class="keyword">while</span> (start &lt; length) &#123;</div><div class="line">            <span class="comment">//如果第一个字符就是空格的话,移动二个下标</span></div><div class="line">            <span class="keyword">if</span> (chars[start] == <span class="string">' '</span>) &#123;</div><div class="line">                start++;</div><div class="line">                end++;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">//如果end为字符串的长度即为整个字符串后面（不严谨的说法）或者有空格的话</span></div><div class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (end == length || chars[end] == <span class="string">' '</span>) &#123;</div><div class="line">                reverse(chars, start, end - <span class="number">1</span>);<span class="comment">//翻转这个单词，end - 1为end-1后的值就是单词的末尾坐标，但是end本身还是在空格那</span></div><div class="line">                end++;<span class="comment">//单独一句无所谓最终end仍然加一，变为第二个单词的开始位置</span></div><div class="line">                start = end;<span class="comment">//start,end 位置又相同了，于是第三个else 语句执行。</span></div><div class="line"></div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">//start不动，end直到空格为止。跑到上一个else if 语句</span></div><div class="line">                end++;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> String(chars);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//第二个算法：左旋转字符串</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">leftRotateString</span><span class="params">(<span class="keyword">char</span>[] chars, <span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (chars != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">int</span> length = chars.length;</div><div class="line">            reverse(chars, <span class="number">0</span>, length - <span class="number">1</span>);<span class="comment">//旋转整个“字符串”</span></div><div class="line">            reverse(chars, <span class="number">0</span>, n - <span class="number">1</span>);<span class="comment">//旋转左字符串</span></div><div class="line">            reverse(chars, n, length - <span class="number">1</span>);<span class="comment">//旋转右字符串</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        <span class="comment">/*int a = 5;</span></div><div class="line">        System.out.println(a-1);</div><div class="line">        System.out.println(a);*/</div><div class="line">        String s = <span class="string">"student. a am I"</span>;</div><div class="line">        String s2 = <span class="string">"Hello! World"</span>;</div><div class="line">        String s3 = <span class="string">"Wonderful!"</span>;</div><div class="line">        <span class="comment">//第一个算法的测试</span></div><div class="line">        System.out.println(reverseSentence(s));</div><div class="line">        System.out.println(reverseSentence(s2));</div><div class="line">        System.out.println(reverseSentence(s3));</div><div class="line">        <span class="comment">//第二个算法的测试</span></div><div class="line">        String string = <span class="string">"Hello World"</span>;</div><div class="line">        <span class="keyword">char</span>[] chars = string.toCharArray();</div><div class="line">        leftRotateString(chars, <span class="number">5</span>);</div><div class="line">        System.out.println(chars);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="题目2左旋转字符串："><a href="#题目2左旋转字符串：" class="headerlink" title="题目2左旋转字符串："></a>题目2左旋转字符串：</h3><p>字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如输入字符串“abcdefg”和数字2，该函数将返回左旋转2位得到的结果”cdefgab”.</p>
-<h3 id="思路：-1"><a href="#思路：-1" class="headerlink" title="思路："></a>思路：</h3><ol>
-<li>使用子程序reverse翻转整个字符串（下标为0到length-1）</li>
-<li>使用子程序翻转前面n个字符（下标为0到n-1）</li>
-<li>使用子程序翻转后面部分的字符(下标为n到length-1)</li>
-</ol>
-<p><strong>参考代码见题目1代码中注释为第二个算法处</strong>。</p>
-<p>更多剑指Offer题目代码请戳<a href="https://github.com/Pisceslau/Algorithm/" target="_blank" rel="external">这里</a></p>
-<p><strong>转载请注明出处</strong></p>
+<h3 id="参考代码："><a href="#参考代码：" class="headerlink" title="参考代码："></a>参考代码：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> Algorithm;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.Arrays;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by Lunar on 2016/3/28.</div><div class="line"> * 剑指Offer第四十四题：扑克牌的顺子</div><div class="line"> * 题目：从扑克牌中随机抽5张牌，判断是不是一个顺子，即这5张牌是不是连续的，2~10为数字本身</div><div class="line"> * ，A为1，J为11，Q为1前12，K为13，而大小王可以看做是任意数字</div><div class="line"> * 思路：首先排序，不是连续的话，看数之间相隔的若干个数字，但只要我们有足够的0就可以补满这二个数字的空缺，这个</div><div class="line"> * 数组实际上还是有序的，因为大小王可以当做是任意的数字，默认值为0</div><div class="line"> * 注意：非0的数字重复则为不是顺子</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IsContinuous</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 求是否连续的方法</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> a 输入数组</div><div class="line">     * <span class="doctag">@return</span> 是否连续</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isContinuous</span><span class="params">(<span class="keyword">int</span>[] a)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (a == <span class="keyword">null</span> || a.length &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        Arrays.sort(a);<span class="comment">//首先使用快速排序排序数组，使之成为可能有0在左侧的按顺序排序的数组</span></div><div class="line">        <span class="comment">//统计排序后的数组的0的个数</span></div><div class="line">        <span class="keyword">int</span> numberOfZero = <span class="number">0</span>;<span class="comment">//0的个数</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; a.length; i++) &#123;</div><div class="line">            <span class="keyword">if</span> (a[i] == <span class="number">0</span>) numberOfZero++;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//统计间隔的数目</span></div><div class="line">        <span class="keyword">int</span> numberOfGap = <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> left = numberOfZero;<span class="comment">//左边数下标,left就是第一个非零数的下标</span></div><div class="line">        <span class="keyword">int</span> right = left + <span class="number">1</span>;<span class="comment">//右边数的下标</span></div><div class="line"></div><div class="line">        <span class="keyword">while</span> (right &lt; a.length) &#123;</div><div class="line">            <span class="comment">//如果相等则不是顺子</span></div><div class="line">            <span class="keyword">if</span> (a[left] == a[right]) <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">            numberOfGap += a[right] - a[left] - <span class="number">1</span>;<span class="comment">//间隔几个连续数字</span></div><div class="line">            <span class="comment">//左右数右移动</span></div><div class="line">            left = right;</div><div class="line">            right++;<span class="comment">//++right也可以，因为是一行语句。</span></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> numberOfGap &lt;= numberOfZero;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span>[] a = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</div><div class="line">        System.out.println(isContinuous(a));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>其他题目代码请参考：</strong> <a href="https://github.com/Pisceslau/Algorithm/" target="_blank" rel="external">这里</a></p>
+<p><strong>转载请注明出处</strong>。</p>
 
 
                 <hr>
@@ -194,12 +189,11 @@
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="2016/09/02/剑指Offer面试题42：翻转单词顺序VS左旋转字符串/"
-                    data-title="剑指Offer面试题42：翻转单词顺序VS左旋转字符串"
-                    data-url="http://wenyueliu.com/2016/09/02/剑指Offer面试题42：翻转单词顺序VS左旋转字符串/"
+                    data-thread-key="2016/09/03/剑指Offer-面试题44-扑克牌的顺子/"
+                    data-title="剑指Offer-面试题44-扑克牌的顺子"
+                    data-url="http://wenyueliu.com/2016/09/03/剑指Offer-面试题44-扑克牌的顺子/"
                     data-images=""
-                    data-content="昨日腾讯模拟笔试题的考试编程题是这个有些生疏了，特此复习一番。
-题目1 翻转单词顺序：输入一个... | 文月的博客 | Warren Liu&#39;s Blog " >
+                    data-content="​    昨日做了58同城的笔试题，里面涉及到了《剑指Offer》的题目，其中有一个就是面试题... | 文月的博客 | Warren Liu&#39;s Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -218,12 +212,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2016/09/03/剑指Offer-面试题44-扑克牌的顺子/" data-toggle="tooltip" data-placement="top" title="剑指Offer-面试题44-扑克牌的顺子">&larr; Previous Post</a>
+                            <a href="/2016/09/03/剑指Offer-面试题37-两个链表的第一个公共结点/" data-toggle="tooltip" data-placement="top" title="剑指Offer-面试题37-两个链表的第一个公共结点">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2016/09/01/数据结构之树/" data-toggle="tooltip" data-placement="top" title="数据结构之树">Next Post &rarr;</a>
+                            <a href="/2016/09/02/剑指Offer面试题42：翻转单词顺序VS左旋转字符串/" data-toggle="tooltip" data-placement="top" title="剑指Offer面试题42：翻转单词顺序VS左旋转字符串">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -232,9 +226,9 @@
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2016/09/02/剑指Offer面试题42：翻转单词顺序VS左旋转字符串/"
-                        data-title="剑指Offer面试题42：翻转单词顺序VS左旋转字符串"
-                        data-url="http://wenyueliu.com/2016/09/02/剑指Offer面试题42：翻转单词顺序VS左旋转字符串/" >
+                        data-thread-key="2016/09/03/剑指Offer-面试题44-扑克牌的顺子/"
+                        data-title="剑指Offer-面试题44-扑克牌的顺子"
+                        data-url="http://wenyueliu.com/2016/09/03/剑指Offer-面试题44-扑克牌的顺子/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
