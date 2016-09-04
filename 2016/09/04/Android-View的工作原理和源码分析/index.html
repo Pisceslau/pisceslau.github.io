@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Android-View的工作原理和源码分析 - 文月的博客 | Warren Liu&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://wenyueliu.com/2016/09/04/Android-View的工作原理和源码分析/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="http://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Warren Liu&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://wenyueliu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                    </div>
+                    <h1>Android-View的工作原理和源码分析</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Warren Liu on
+                        2016-09-04
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Android-View的工作原理和源码分析"><a href="#Android-View的工作原理和源码分析" class="headerlink" title="Android-View的工作原理和源码分析"></a>Android-View的工作原理和源码分析</h1><p>主要讲的是Android View的工作原理。</p>
+<h3 id="一、几个概念："><a href="#一、几个概念：" class="headerlink" title="一、几个概念："></a>一、几个概念：</h3><ol>
+<li><p>ViewRoot</p>
+<p>对应类ViewRootImpl，是连接WindowManager和DecorVIew的纽带。在AndroidThread中，Activity创建后DecorView加入到Window,并创建VIewRootImpl并将ViewRootImpl与DecorView建立关联。</p>
+<p>如图所示。</p>
+</li>
+<li><p>DecorView</p>
+<p>顶级View，View层的所有事件都先经过DecorView然后传递给我们的View。</p>
+</li>
+<li><p>顶级View包含标题栏（titlebar）和内容栏（id为android.R.id.content） </p>
+<p>我们setContentView设置的布局文件是加上加载到了这个id为content的FrameLayout中。</p>
+</li>
+<li><p>MeasureSpec</p>
+<p>顾名思义，可以理解为一种”测量说明“，在很大程度上决定了一个View的尺寸规格。</p>
+<blockquote>
+<p>View自身的LayoutParams + 父容器规则 = View自身的MeasureSpec—–&gt;然后根据这个计算出测量宽高。</p>
+</blockquote>
+<p>32位的int值，高2位是SpecMode(测量模式)，低30位是SpecSize(某种测量模式下的规格大小)</p>
+<p>SpecMode有三类分别是：</p>
+<p> (1)UNSPECIFIED：父容器不对View有限制。一般用于系统内部</p>
+<p> (2)EXACTLY：精确模式，View最终大小为SpecSize指定值，对应于LayoutParams的match_parent和具体数值二种形式。</p>
+<p>(3)AT_MOST：对应于LayoutParams的wrap_content，父容器指定了一个大小，View大小不能超过。</p>
+<blockquote>
+<p>顶级View（DecorView）的MeasureSpec为窗口尺寸和自身的LayoutParams决定</p>
+<p>普通View的MeasureSpec由自身LayoutParams和父容器的MeasureSpec决定</p>
+</blockquote>
+<hr>
+<p>​</p>
+<h3 id="View的工作流程："><a href="#View的工作流程：" class="headerlink" title="View的工作流程："></a>View的工作流程：</h3><p>View的measure流程主要有measure，layout，draw三部分。而measure流程中有ViewGroup执行的代码部分还有View自身的measure方法执行的过程。</p>
+<h2 id="View-的measure流程中的ViewGroup部分。"><a href="#View-的measure流程中的ViewGroup部分。" class="headerlink" title="####View 的measure流程中的ViewGroup部分。"></a>####View 的measure流程中的ViewGroup部分。</h2><p>插入图片：</p>
+<p>View的measure流程由ViewGroup而来。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">measureChildWithMargins</span><span class="params">(View child,</span></span></div><div class="line">            <span class="keyword">int</span> parentWidthMeasureSpec, <span class="keyword">int</span> widthUsed,</div><div class="line">            <span class="keyword">int</span> parentHeightMeasureSpec, <span class="keyword">int</span> heightUsed) &#123;</div><div class="line">        <span class="keyword">final</span> MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();</div><div class="line"></div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,</div><div class="line">                mPaddingLeft + mPaddingRight + lp.leftMargin + lp.rightMargin</div><div class="line">                        + widthUsed, lp.width);</div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,</div><div class="line">                mPaddingTop + mPaddingBottom + lp.topMargin + lp.bottomMargin</div><div class="line">                        + heightUsed, lp.height);</div><div class="line"></div><div class="line">        child.measure(childWidthMeasureSpec, childHeightMeasureSpec);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>​</p>
+<p><strong>核心方法调用情况</strong>：</p>
+<p>ViewGroup 的measureChildWithMargins，此方法中调用了getChildMeasureSpec根据margin，padding获取子元素的MeasureSpec，然后把宽高的MeasureSpec作为参数传给measure执行，measure就是View自身的测量过程。</p>
+<p>desiredWindowWidth和desiredHeight就是窗口大小，lp.width,lp.height是对应的LayoutParams。</p>
+<p>整个getRootMeasureSpec方法就是根据LayoutParams来执行的</p>
+<p>1.1 若DecorView自身LayoutParams是MATCH_PARENTt创建的MeasureSpec尺寸是窗口大小，模式是EXACTLY，这很容易理解，因为窗口就那么大，Decor自己MATCH_PARENT了，于是最终大小也是一个确定的值，所以模式为EXACTLY。</p>
+<p>1.2 若Decor自身是WRAP_CONTENT，那么尺寸同上，不过模式是AT_MOST,即为最大化</p>
+<p>1.3 精确模式则就为那个值，然后模式是EXACTLY的。</p>
+</li>
+</ol>
+<p>getChildMeasureSpec就是普通View的MeasureSpec的构建过程了</p>
+<p><strong>代码</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getChildMeasureSpec</span><span class="params">(<span class="keyword">int</span> spec, <span class="keyword">int</span> padding, <span class="keyword">int</span> childDimension)</span> </span>&#123;</div><div class="line">      <span class="keyword">int</span> specMode = MeasureSpec.getMode(spec);</div><div class="line">      <span class="keyword">int</span> specSize = MeasureSpec.getSize(spec);</div><div class="line"></div><div class="line">      <span class="keyword">int</span> size = Math.max(<span class="number">0</span>, specSize - padding);</div><div class="line"></div><div class="line">      <span class="keyword">int</span> resultSize = <span class="number">0</span>;</div><div class="line">      <span class="keyword">int</span> resultMode = <span class="number">0</span>;</div><div class="line"></div><div class="line">      <span class="keyword">switch</span> (specMode) &#123;</div><div class="line">      <span class="comment">// Parent has imposed an exact size on us</span></div><div class="line">      <span class="keyword">case</span> MeasureSpec.EXACTLY:</div><div class="line">          <span class="keyword">if</span> (childDimension &gt;= <span class="number">0</span>) &#123;</div><div class="line">              resultSize = childDimension;</div><div class="line">              resultMode = MeasureSpec.EXACTLY;</div><div class="line">          &#125; <span class="keyword">else</span> <span class="keyword">if</span> (childDimension == LayoutParams.MATCH_PARENT) &#123;</div><div class="line">              <span class="comment">// Child wants to be our size. So be it.</span></div><div class="line">              resultSize = size;</div><div class="line">              resultMode = MeasureSpec.EXACTLY;</div><div class="line">          &#125; <span class="keyword">else</span> <span class="keyword">if</span> (childDimension == LayoutParams.WRAP_CONTENT) &#123;</div><div class="line">              <span class="comment">// Child wants to determine its own size. It can't be</span></div><div class="line">              <span class="comment">// bigger than us.</span></div><div class="line">              resultSize = size;</div><div class="line">              resultMode = MeasureSpec.AT_MOST;</div><div class="line">          &#125;</div><div class="line">          <span class="keyword">break</span>;</div><div class="line"></div><div class="line">      <span class="comment">// Parent has imposed a maximum size on us</span></div><div class="line">      <span class="keyword">case</span> MeasureSpec.AT_MOST:</div><div class="line">          <span class="keyword">if</span> (childDimension &gt;= <span class="number">0</span>) &#123;</div><div class="line">              <span class="comment">// Child wants a specific size... so be it</span></div><div class="line">              resultSize = childDimension;</div><div class="line">              resultMode = MeasureSpec.EXACTLY;</div><div class="line">          &#125; <span class="keyword">else</span> <span class="keyword">if</span> (childDimension == LayoutParams.MATCH_PARENT) &#123;</div><div class="line">              <span class="comment">// Child wants to be our size, but our size is not fixed.</span></div><div class="line">              <span class="comment">// Constrain child to not be bigger than us.</span></div><div class="line">              resultSize = size;</div><div class="line">              resultMode = MeasureSpec.AT_MOST;</div><div class="line">          &#125; <span class="keyword">else</span> <span class="keyword">if</span> (childDimension == LayoutParams.WRAP_CONTENT) &#123;</div><div class="line">              <span class="comment">// Child wants to determine its own size. It can't be</span></div><div class="line">              <span class="comment">// bigger than us.</span></div><div class="line">              resultSize = size;</div><div class="line">              resultMode = MeasureSpec.AT_MOST;</div><div class="line">          &#125;</div><div class="line">          <span class="keyword">break</span>;</div><div class="line"></div><div class="line">      <span class="comment">// Parent asked to see how big we want to be</span></div><div class="line">      <span class="keyword">case</span> MeasureSpec.UNSPECIFIED:</div><div class="line">          <span class="keyword">if</span> (childDimension &gt;= <span class="number">0</span>) &#123;</div><div class="line">              <span class="comment">// Child wants a specific size... let him have it</span></div><div class="line">              resultSize = childDimension;</div><div class="line">              resultMode = MeasureSpec.EXACTLY;</div><div class="line">          &#125; <span class="keyword">else</span> <span class="keyword">if</span> (childDimension == LayoutParams.MATCH_PARENT) &#123;</div><div class="line">              <span class="comment">// Child wants to be our size... find out how big it should</span></div><div class="line">              <span class="comment">// be</span></div><div class="line">              resultSize = View.sUseZeroUnspecifiedMeasureSpec ? <span class="number">0</span> : size;</div><div class="line">              resultMode = MeasureSpec.UNSPECIFIED;</div><div class="line">          &#125; <span class="keyword">else</span> <span class="keyword">if</span> (childDimension == LayoutParams.WRAP_CONTENT) &#123;</div><div class="line">              <span class="comment">// Child wants to determine its own size.... find out how</span></div><div class="line">              <span class="comment">// big it should be</span></div><div class="line">              resultSize = View.sUseZeroUnspecifiedMeasureSpec ? <span class="number">0</span> : size;</div><div class="line">              resultMode = MeasureSpec.UNSPECIFIED;</div><div class="line">          &#125;</div><div class="line">          <span class="keyword">break</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">return</span> MeasureSpec.makeMeasureSpec(resultSize, resultMode);</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>根据父容器的MeasureSpec（也就是ViewGroup自身的MeasureSpec）的模式（Mode）的三种情况分别再根据自身的LayoutParams情况得出SpecSize和SpecMode,并将二者结合成MeasureSpec。</p>
+<p>1.1父的(ViewGroup)MeasureSpec的模式是EXACTLY那么1.1.1子的LayoutParams要是要个确定数值的，那么子的尺寸就是这个精确值，子的模式就是EXACTLY</p>
+<p> 1.1.2 子要match_parent，那么最终大小也是父亲剩余大小尺寸，模式为EXACTLY</p>
+<p>1.1.3子要最大化，wrap_content,最终大小为父容器剩余尺寸，模式为AT_MOST</p>
+<p>1.2父的MeasureSpec模式为AT_MOST，最大化那么1.2.1子要精确值，那么尺寸就是这个精确值（好了），模式为EXACTLY </p>
+<p>1.2.2,子要MATCH_PATCH,最终大小就是父亲剩余的尺寸(size= specSize-padding)，模式为AT_MOST(父亲变得趋势，子就完全扩充)</p>
+<p>1.2.3子要最大化模式，AT_MOST,最终大小就是父容器剩余的尺寸，模式AT_MOST,父子都有变大的趋势。</p>
+<p>1.3父的MeasureSpec模式为UNSPECIFIED，略。</p>
+<p><strong>由此得出个结论：</strong></p>
+<p>当前的View（子）的LayoutParams为wrap_content,不管父亲是EXACTLY还是AT_MOST的，大小都为父容器剩余的尺寸。和本身LayoutParams是match_parent的情况一样。</p>
+<hr>
+<p>以上是View的measure流程中的ViewGroup执行的代码情况。下面是measure流程中的View measure方法执行情况。</p>
+<h3 id="View的measure之measure-方法部分："><a href="#View的measure之measure-方法部分：" class="headerlink" title="View的measure之measure()方法部分："></a>View的measure之measure()方法部分：</h3><p>ViewGroup的getChildMeasureSpec获取了View的宽高的MeasureSpec然后将其传入了child.measure()方法之中。measure()方法最终调用了View的onMeasure()方法。</p>
+<p><strong>核心方法调用情况：</strong></p>
+<p>measure()-&gt;onMeasure()-&gt;setMeasuredDimension(getDefaultSize(…..))</p>
+<p>onMeasure方法中,首先getDefaultSize获得了View宽高的Spec中的SpecSize部分，然后setMeasuredDimension设置这个View尺寸（宽高）为SpecSize部分。</p>
+<p>onMeasure()方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</div><div class="line">       setMeasuredDimension(getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec),</div><div class="line">               getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec));</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>getSuggestedMinimunWidth()根据背景和android:minWidth属性指定的值确定一个最小的宽,Height的原理一样。</p>
+<p>getDefaultSize()方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getDefaultSize</span><span class="params">(<span class="keyword">int</span> size, <span class="keyword">int</span> measureSpec)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> result = size;</div><div class="line">        <span class="keyword">int</span> specMode = MeasureSpec.getMode(measureSpec);</div><div class="line">        <span class="keyword">int</span> specSize = MeasureSpec.getSize(measureSpec);</div><div class="line"></div><div class="line">        <span class="keyword">switch</span> (specMode) &#123;</div><div class="line">        <span class="keyword">case</span> MeasureSpec.UNSPECIFIED:</div><div class="line">            result = size;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> MeasureSpec.AT_MOST:</div><div class="line">        <span class="keyword">case</span> MeasureSpec.EXACTLY:</div><div class="line">            result = specSize;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>View本身的MeasureSpec的模式若是AT_MOST和EXACTLY都会返回specSize，即MeasureSpec中的尺寸部分。这个specSize就是View测量后的大小。</p>
+<p>至此，基本的View measure流程分析完毕。</p>
+<hr>
+<h2 id="ViewGroup的measure过程："><a href="#ViewGroup的measure过程：" class="headerlink" title="ViewGroup的measure过程："></a>ViewGroup的measure过程：</h2><p>ViewGroup既然是“View的组”那么除了完成自己measure过程还要遍历子，并调用子的measure方法。</p>
+<p>核心方法调用情况：具体ViewGroup的onMeasure()—&gt;measureChildren-&gt;measureChild</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">measureChildren</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</div><div class="line">      <span class="keyword">final</span> <span class="keyword">int</span> size = mChildrenCount;</div><div class="line">      <span class="keyword">final</span> View[] children = mChildren;</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; ++i) &#123;</div><div class="line">          <span class="keyword">final</span> View child = children[i];</div><div class="line">          <span class="keyword">if</span> ((child.mViewFlags &amp; VISIBILITY_MASK) != GONE) &#123;</div><div class="line">              measureChild(child, widthMeasureSpec, heightMeasureSpec);</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">measureChild</span><span class="params">(View child, <span class="keyword">int</span> parentWidthMeasureSpec,</span></span></div><div class="line">            <span class="keyword">int</span> parentHeightMeasureSpec) &#123;</div><div class="line">        <span class="keyword">final</span> LayoutParams lp = child.getLayoutParams();</div><div class="line"></div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,</div><div class="line">                mPaddingLeft + mPaddingRight, lp.width);</div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,</div><div class="line">                mPaddingTop + mPaddingBottom, lp.height);</div><div class="line"></div><div class="line">        child.measure(childWidthMeasureSpec, childHeightMeasureSpec);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>逻辑简单说就是ViewGroup在measureChildren方法中把自己的MeasureSpec作为子View的parentMeasureSpec，子元素再获取到LayoutParams并且调用getChildMeasureSpec获得自己的MeasureSpec,然后执行measure()方法测量自己。</p>
+<p>ViewGroup的onMeasure方法需要子类自己实现，因为ViewGroup有很多种，如LinearLayout,RelativeLayout等。无法统一。</p>
+
+
+                <hr>
+
+                
+                <!-- 多说 Share start -->
+                </style>
+                <div class="ds-share"
+                    style="text-align: right"
+                    data-thread-key="2016/09/04/Android-View的工作原理和源码分析/"
+                    data-title="Android-View的工作原理和源码分析"
+                    data-url="http://wenyueliu.com/2016/09/04/Android-View的工作原理和源码分析/"
+                    data-images=""
+                    data-content="Android-View的工作原理和源码分析主要讲的是Android View的工作原理。
+一... | 文月的博客 | Warren Liu&#39;s Blog " >
+                    <div class="ds-share-inline">
+                      <ul  class="ds-share-icons-16">
+                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                      </ul>
+                      <div class="ds-share-icons-more">
+                      </div>
+                    </div>
+                <hr>
+                </div>
+                <!-- 多说 Share end-->
+                
+
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/09/03/Git-常见错误及其解决方式/" data-toggle="tooltip" data-placement="top" title="Git 常见错误及其解决方式">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="2016/09/04/Android-View的工作原理和源码分析/"
+                        data-title="Android-View的工作原理和源码分析"
+                        data-url="http://wenyueliu.com/2016/09/04/Android-View的工作原理和源码分析/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = 'wenyueliu';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/Pisceslau">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/liu-wen-yue-34">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/Pisces">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Pisceslau">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Warren Liu&#39;s Blog 2016 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://wenyueliu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://wenyueliu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work --><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+
+</html>
