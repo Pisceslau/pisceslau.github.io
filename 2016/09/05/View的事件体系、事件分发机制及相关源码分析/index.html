@@ -13,11 +13,11 @@
 
     <title>
         
-          文月的博客 | Warren Liu&#39;s Blog
+          View的事件体系、事件分发机制及相关源码分析 - 文月的博客 | Warren Liu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://wenyueliu.com/tags/剑指Offer/">
+    <link rel="canonical" href="http://wenyueliu.com/2016/09/05/View的事件体系、事件分发机制及相关源码分析/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -123,7 +123,228 @@
 
 
     <!-- Main Content -->
-    <!-- Default Archive layout, we use archives instead. -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://wenyueliu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                          <a class="tag" href="/tags/#源码" title="源码">源码</a>
+                        
+                    </div>
+                    <h1>View的事件体系、事件分发机制及相关源码分析</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Warren Liu on
+                        2016-09-05
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>  今天主要记录View的事件体系和事件分发机制，事件分发机制的相关源码和大致流程。</p>
+<p>一、 几个概念</p>
+<ol>
+<li><p>如图所示</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">left = getLeft();</div><div class="line">right = getRight();</div><div class="line">bottom = getBottom();</div><div class="line">top = getTop();</div></pre></td></tr></table></figure>
+<p>left, top代表View左上角距离父控件（父容器）的x和y距离，也就是一种<strong>相对坐标 </strong>，同理，bottom,right代表View右下角距离父容器的y和x距离。</p>
+</li>
+<li><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">x = left + translationX;</div><div class="line">y = top + translationY;</div></pre></td></tr></table></figure>
+<p>x,y是View左上角的坐标，而translationX,translationY是View左上角相对于父容器的偏移量，View平移过程中left,top不变，随着偏移量translationX和translationY的改变而某时刻的x,y改变。</p>
+</li>
+<li><p>MotionEvent :</p>
+<p>代表手指触屏的事件，由<em>ACTION_DOWN</em>和一系列<em>ACTION_MOVE</em>还有<em>ACTION_UP</em>构成。<strong>Android系统可以使用getRawY/getRawX还有getX/getY获得触摸点的坐标</strong>。二者区别在于Raw获得是相对于手机屏幕左上角的x和y坐标，getX/getY获得的是触摸点相对于当前View的左上角的x,y坐标。</p>
+</li>
+<li><p>TouchSlop</p>
+<p>系统识别出的被认为是最小的滑动距离，意思是若滑动的距离$$\geq$$这个TouchSlop则认为是一次滑动，否则不是。</p>
+<p>​</p>
+<p>​                                                                            以上完成于9.5.2016</p>
+<hr>
+<p>​</p>
+</li>
+</ol>
+
+
+                <hr>
+
+                
+                <!-- 多说 Share start -->
+                </style>
+                <div class="ds-share"
+                    style="text-align: right"
+                    data-thread-key="2016/09/05/View的事件体系、事件分发机制及相关源码分析/"
+                    data-title="View的事件体系、事件分发机制及相关源码分析"
+                    data-url="http://wenyueliu.com/2016/09/05/View的事件体系、事件分发机制及相关源码分析/"
+                    data-images=""
+                    data-content="  今天主要记录View的事件体系和事件分发机制，事件分发机制的相关源码和大致流程。
+一、 几... | 文月的博客 | Warren Liu&#39;s Blog " >
+                    <div class="ds-share-inline">
+                      <ul  class="ds-share-icons-16">
+                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                      </ul>
+                      <div class="ds-share-icons-more">
+                      </div>
+                    </div>
+                <hr>
+                </div>
+                <!-- 多说 Share end-->
+                
+
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/09/04/Android-View的工作原理和源码分析/" data-toggle="tooltip" data-placement="top" title="Android-View的工作原理和源码分析">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="2016/09/05/View的事件体系、事件分发机制及相关源码分析/"
+                        data-title="View的事件体系、事件分发机制及相关源码分析"
+                        data-url="http://wenyueliu.com/2016/09/05/View的事件体系、事件分发机制及相关源码分析/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                          <a class="tag" href="/tags/#源码" title="源码">源码</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://cai-lei.com" target="_blank">蔡磊的博客</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = 'wenyueliu';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
 
     <!-- Footer -->
     <!-- Footer -->
