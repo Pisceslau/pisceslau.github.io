@@ -13,11 +13,11 @@
 
     <title>
         
-          View的事件体系、事件分发机制及相关源码分析 - 文月的博客 | Warren Liu&#39;s Blog
+          Android-四大组件工作过程之Activity - 文月的博客 | Warren Liu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://wenyueliu.com/2016/09/05/View的事件体系、事件分发机制及相关源码分析/">
+    <link rel="canonical" href="http://wenyueliu.com/2016/09/06/Android-四大组件工作过程之Activity/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -143,16 +143,14 @@
                         
                           <a class="tag" href="/tags/#Android" title="Android">Android</a>
                         
-                          <a class="tag" href="/tags/#源码" title="源码">源码</a>
-                        
-                          <a class="tag" href="/tags/#View" title="View">View</a>
+                          <a class="tag" href="/tags/#Activity" title="Activity">Activity</a>
                         
                     </div>
-                    <h1>View的事件体系、事件分发机制及相关源码分析</h1>
+                    <h1>Android-四大组件工作过程之Activity</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Warren Liu on
-                        2016-09-05
+                        2016-09-06
                     </span>
                 </div>
             </div>
@@ -171,73 +169,16 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>  今天主要记录View的事件体系和事件分发机制，事件分发机制的相关源码和大致流程。</p>
-<h2 id="一、-几个概念"><a href="#一、-几个概念" class="headerlink" title="一、 几个概念"></a>一、 几个概念</h2><ol>
-<li><p>如图所示</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">left = getLeft();</div><div class="line">right = getRight();</div><div class="line">bottom = getBottom();</div><div class="line">top = getTop();</div></pre></td></tr></table></figure>
-<p>left, top代表View左上角距离父控件（父容器）的x和y距离，也就是一种<strong>相对坐标 </strong>，同理，bottom,right代表View右下角距离父容器的y和x距离。</p>
-</li>
-<li><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">x = left + translationX;</div><div class="line">y = top + translationY;</div></pre></td></tr></table></figure>
-<p>x,y是View左上角的坐标，而translationX,translationY是View左上角相对于父容器的偏移量，View平移过程中left,top不变，随着偏移量translationX和translationY的改变而某时刻的x,y改变。</p>
-</li>
-<li><p>MotionEvent :</p>
-<p>代表手指触屏的事件，由<em>ACTION_DOWN</em>和一系列<em>ACTION_MOVE</em>还有<em>ACTION_UP</em>构成。<strong>Android系统可以使用getRawY/getRawX还有getX/getY获得触摸点的坐标</strong>。二者区别在于Raw获得是相对于手机屏幕左上角的x和y坐标，getX/getY获得的是触摸点相对于当前View的左上角的x,y坐标。</p>
-</li>
-<li><p>TouchSlop</p>
-<p>系统识别出的被认为是最小的滑动距离，意思是若滑动的距离$$\geq$$这个TouchSlop则认为是一次滑动，否则不是。</p>
-<p>​</p>
-<p>​                                                                            以上完成于9.5.2016</p>
-<hr>
-<ol>
-<li><p>VelocityTracker速度追踪</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//1.</span></div><div class="line">VelocityTracker vt = VelocityTracker.obtain();</div><div class="line">vt.addMoment(event);</div><div class="line"><span class="comment">//2.</span></div><div class="line">vt.computeCurrentVelocity(<span class="number">1000</span>);</div><div class="line"><span class="keyword">int</span> xVelocity = (<span class="keyword">int</span>)vt.getXVelocity();</div><div class="line"><span class="keyword">int</span> yVelocity = (<span class="keyword">int</span>)vt.getYVelocity(); </div><div class="line"><span class="comment">//3</span></div><div class="line">vt.clear();</div><div class="line">vt.recycle();</div></pre></td></tr></table></figure>
-<p>该代码1处是在View的onTouchEvent方法中追踪当前方法和当前点击事件的速度。想知道当前滑动速度则是注释2处，computeCurrentVelocity是计算速度，速度单位是像素/毫秒，上面的1000就是1000毫秒，向右和下就是正值，反之则为负值。注释3处则是重置和回收内存。</p>
-</li>
-<li><p>GestureDetector手势检测</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//1.</span></div><div class="line">GestureDetector gd = <span class="keyword">new</span> GestureDetector();</div><div class="line">gd.setIsLongpressEnable(<span class="keyword">false</span>);</div><div class="line"></div><div class="line"><span class="comment">//2.</span></div><div class="line"><span class="keyword">boolean</span> consume = gd.onTouchEvent(event);</div><div class="line"><span class="keyword">return</span> consume</div></pre></td></tr></table></figure>
-<p>注释1处创建对象并且实现OnGestureListener接口，注释2处在目标View的OnTouchEvent中添加的代码。然后实现各种方法如onDown,onShowPress等。</p>
-</li>
-<li><p>Scroller弹性滑动对象</p>
-<p>在View滑动具体介绍。</p>
-</li>
-</ol>
-</li>
-</ol>
-<h2 id="二、View的滑动"><a href="#二、View的滑动" class="headerlink" title="二、View的滑动"></a>二、View的滑动</h2><p>实现View的滑动主要有三种方式</p>
-<ol>
-<li><p>通过View自带的scrollTo/scrollBy方法</p>
-<p>scrollBy方法的实现，也是调用了scrollTo方法，通过View内部的两个成员变量，mScrollX,mScrollY进行改变。这两个变量的改变View内部的内容的改变，相对于View左和下是正值，相对于View右和上则为负值。这与View的向右为正下为正的坐标系相反。</p>
-<p>优点：操作简单。</p>
-<p>缺点：只能滑动View内容，不能滑动View本身。</p>
-</li>
-<li><p>使用动画</p>
-<p>例如使用属性动画，View动画等。View动画并不能改变View的真正位置，触发点击事件会出问题。</p>
-<p>适合没有交互的。</p>
-</li>
-<li><p>改变布局参数：LayoutParams</p>
-<p>适合有交互的。</p>
-</li>
-</ol>
-<h2 id="三、View的弹性滑动"><a href="#三、View的弹性滑动" class="headerlink" title="三、View的弹性滑动"></a>三、View的弹性滑动</h2><p>View直接滑动生硬，用户体验不佳。弹性滑动是在一定时间内滑动过去，用户体验较好。</p>
-<p>根据View滑动的三种实现方式，分别实现View的弹性滑动</p>
-<ol>
-<li><p>Scroller</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">smoothScrollTo</span><span class="params">(<span class="keyword">int</span> destX,,<span class="keyword">int</span> destY)</span></span>&#123;</div><div class="line">  <span class="keyword">int</span> scorllX = getScrollX();</div><div class="line">  <span class="keyword">int</span> deltaX = destX - scrollX;</div><div class="line">  <span class="comment">//参数分别为X滑动起点，y滑动起点，x滑动距离，y滑动距离，滑动时间</span></div><div class="line">  mScroller.startrScroll(scrollX,<span class="number">0</span>,deltaX,<span class="number">0</span>,<span class="number">1000</span>);</div><div class="line">&#125;</div><div class="line"><span class="meta">@override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">computeScroll</span><span class="params">()</span></span>&#123;</div><div class="line">  <span class="keyword">if</span>(mScroller.computeScrollOffset())&#123;</div><div class="line">    scrollTo(mScroller.getCurrX(),mScroller.getCurrY());</div><div class="line">    postInvalidate();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startScroll</span><span class="params">(<span class="keyword">int</span> startX, <span class="keyword">int</span> startY, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy, <span class="keyword">int</span> duration)</span> </span>&#123;</div><div class="line">        mMode = SCROLL_MODE;</div><div class="line">        mFinished = <span class="keyword">false</span>;</div><div class="line">        mDuration = duration;</div><div class="line">        mStartTime = AnimationUtils.currentAnimationTimeMillis();</div><div class="line">        mStartX = startX;</div><div class="line">        mStartY = startY;</div><div class="line">        mFinalX = startX + dx;</div><div class="line">        mFinalY = startY + dy;</div><div class="line">        mDeltaX = dx;</div><div class="line">        mDeltaY = dy;</div><div class="line">        mDurationReciprocal = <span class="number">1.0f</span> / (<span class="keyword">float</span>) mDuration;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>通过startScroll的源码知道，startScroll方法保存传入的滑动起点，滑动距离和滑动时间，然后这个方法并没有进行滑动的相关动作，然后执行了invalidate()方法，这个方法会触发View的刷新和重绘制，于是View的draw方法调用了，draw方法又会调用由我们覆盖的computeScroll方法，在这个方法里，getCurrX,getCurrY不断获取到现在的坐标scrollX.scrollY,然后scrollTo执行实现滑动，然后postInvalidate又会刷新动作，最终调用computeScroll,一直循环，除非判断的条件if(mScroller.computeScrollOffset())为false，这个computeScrollOffset()方法根据时间流逝计算当前scrollX和Y（也就是mCurrX,mCurrY），返回值为true则代表滑动还在继续。然后这个mCurrX,mCurrY就在getCurrY/X中得到了。</p>
-</li>
-<li><p>使用动画</p>
-<p>动画可以属性动画解决或者模拟Scroller实现方式，主要就是为animator的addUpdateListener中获得动画百分比(fraction),然后View利用scrollTo根据百分比获得距离，来完成滑动动作。</p>
-</li>
-<li><p>延迟策略</p>
-<p>如使用View的postDelayed()发消息给Handler,的handleMessage()方法，此方法里也会使用sendEmptyMessageDelayed方法不断发送消息到handler的handleMessage方法，然后进行循环处理，思想一致的都是获得百分比，然后不断进行坐标计算，然后View使用scrollTo方法()进行动作的变换。      </p>
-<p>​                                                                                                                                                </p>
-<p>​                                                                                                                                                          </p>
-<p>​                                                                    以上完成于9.6.2016</p>
-<hr>
-<p>​</p>
-</li>
-</ol>
+                <p>今天复习了Android四大组件的启动过程中的Activity的启动过程，四大组件在Android开发中的地位不言而喻，分别是Activity，Service，BroadcastReceiver, ContentProvider。这四大组件只有ContentProvider不需要借助Intent启动，BroadcastReceiver既可以在Manifest布局文件中进行注册也可以在Java中使用registerReceiver和unRegisterReceiver进行注册和解注册。</p>
+<h3 id="一、简介："><a href="#一、简介：" class="headerlink" title="一、简介："></a>一、简介：</h3><p>简单来说Activity主要是界面，Service是服务，运行在后台，但是也是在<strong>主线程</strong>中运行的，所以Service要进行复杂费时的计算仍然要新建立一个线程。BroadcastReceiver是广播接收器，主要是收sendBroadcast方法发出的广播，然后在自己的onReceiver获得广播，并进行相应的处理、ContentProvider是内容提供者，内部维持着一份数据集合，这个数据集合可以使用数据库实现，和ContentResolver配合使用。它的增删改查方法insert、delete、update、query需要处理好线程同步，因为这几个方法是在Binder的线程池中运行的。</p>
+<h2 id="二、Activity的工作过程："><a href="#二、Activity的工作过程：" class="headerlink" title="二、Activity的工作过程："></a>二、Activity的工作过程：</h2><p>一个Activity的开始通常是这样的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Intent i = <span class="keyword">new</span> Intent(<span class="keyword">this</span>,TestActivity.class);</div><div class="line">startActivity(intent);</div></pre></td></tr></table></figure>
+<p>startActivity的源码其中之一</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivity</span><span class="params">(Intent intent, @Nullable Bundle options)</span> </span>&#123;</div><div class="line">      <span class="keyword">if</span> (options != <span class="keyword">null</span>) &#123;</div><div class="line">          startActivityForResult(intent, -<span class="number">1</span>, options);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">          <span class="comment">// Note we want to go through this call for compatibility with</span></div><div class="line">          <span class="comment">// applications that may have overridden the method.</span></div><div class="line">          startActivityForResult(intent, -<span class="number">1</span>);</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>很多种startActivity方法最终都调用了<strong>startActivityForResult()</strong>方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="function">ublic <span class="keyword">void</span> <span class="title">startActivityForResult</span><span class="params">(Intent intent, <span class="keyword">int</span> requestCode, @Nullable Bundle options)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mParent == <span class="keyword">null</span>) &#123;</div><div class="line">          <span class="comment">//注释一</span></div><div class="line">            Instrumentation.ActivityResult ar =</div><div class="line">                mInstrumentation.execStartActivity(</div><div class="line">                    <span class="keyword">this</span>, mMainThread.getApplicationThread(), mToken, <span class="keyword">this</span>,</div><div class="line">                    intent, requestCode, options);</div><div class="line">            <span class="keyword">if</span> (ar != <span class="keyword">null</span>) &#123;</div><div class="line">                mMainThread.sendActivityResult(</div><div class="line">                    mToken, mEmbeddedID, requestCode, ar.getResultCode(),</div><div class="line">                    ar.getResultData());</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (requestCode &gt;= <span class="number">0</span>) &#123;</div><div class="line">                <span class="comment">// If this start is requesting a result, we can avoid making</span></div><div class="line">                <span class="comment">// the activity visible until the result is received.  Setting</span></div><div class="line">                <span class="comment">// this code during onCreate(Bundle savedInstanceState) or onResume() will keep the</span></div><div class="line">                <span class="comment">// activity hidden during this time, to avoid flickering.</span></div><div class="line">                <span class="comment">// This can only be done when a result is requested because</span></div><div class="line">                <span class="comment">// that guarantees we will get information back when the</span></div><div class="line">                <span class="comment">// activity is finished, no matter what happens to it.</span></div><div class="line">                mStartedActivity = <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">final</span> View decor = mWindow != <span class="keyword">null</span> ? mWindow.peekDecorView() : <span class="keyword">null</span>;</div><div class="line">            <span class="keyword">if</span> (decor != <span class="keyword">null</span>) &#123;</div><div class="line">                decor.cancelPendingInputEvents();</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// TODO Consider clearing/flushing other event sources and events for child windows.</span></div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">if</span> (options != <span class="keyword">null</span>) &#123;</div><div class="line">                mParent.startActivityFromChild(<span class="keyword">this</span>, intent, requestCode, options);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// Note we want to go through this method for compatibility with</span></div><div class="line">                <span class="comment">// existing applications that may have overridden it.</span></div><div class="line">                mParent.startActivityFromChild(<span class="keyword">this</span>, intent, requestCode);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (options != <span class="keyword">null</span> &amp;&amp; !isTopOfTask()) &#123;</div><div class="line">            mActivityTransitionState.startExitOutTransition(<span class="keyword">this</span>, options);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>在这个方法中关键的地方在于注释一处，因为mParent==null,mParent是后来被弃用的ActivityGroup，Instrumentation调用了execStartAcitvity方法，mMainThread.getApplicationThread()得到一个ApplicationThread对象，这个类是ActivityThread的内部类。</p>
+<p>然后在execStartActivity方法中：</p>
 
 
                 <hr>
@@ -247,12 +188,11 @@
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="2016/09/05/View的事件体系、事件分发机制及相关源码分析/"
-                    data-title="View的事件体系、事件分发机制及相关源码分析"
-                    data-url="http://wenyueliu.com/2016/09/05/View的事件体系、事件分发机制及相关源码分析/"
+                    data-thread-key="2016/09/06/Android-四大组件工作过程之Activity/"
+                    data-title="Android-四大组件工作过程之Activity"
+                    data-url="http://wenyueliu.com/2016/09/06/Android-四大组件工作过程之Activity/"
                     data-images=""
-                    data-content="  今天主要记录View的事件体系和事件分发机制，事件分发机制的相关源码和大致流程。
-一、 几... | 文月的博客 | Warren Liu&#39;s Blog " >
+                    data-content="今天复习了Android四大组件的启动过程中的Activity的启动过程，四大组件在Andro... | 文月的博客 | Warren Liu&#39;s Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -270,13 +210,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2016/09/06/Android-四大组件工作过程之Activity/" data-toggle="tooltip" data-placement="top" title="Android-四大组件工作过程之Activity">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2016/09/04/Android-View的工作原理和源码分析/" data-toggle="tooltip" data-placement="top" title="Android-View的工作原理和源码分析">Next Post &rarr;</a>
+                            <a href="/2016/09/05/View的事件体系、事件分发机制及相关源码分析/" data-toggle="tooltip" data-placement="top" title="View的事件体系、事件分发机制及相关源码分析">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -285,9 +221,9 @@
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2016/09/05/View的事件体系、事件分发机制及相关源码分析/"
-                        data-title="View的事件体系、事件分发机制及相关源码分析"
-                        data-url="http://wenyueliu.com/2016/09/05/View的事件体系、事件分发机制及相关源码分析/" >
+                        data-thread-key="2016/09/06/Android-四大组件工作过程之Activity/"
+                        data-title="Android-四大组件工作过程之Activity"
+                        data-url="http://wenyueliu.com/2016/09/06/Android-四大组件工作过程之Activity/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
@@ -315,9 +251,7 @@
                        
                           <a class="tag" href="/tags/#Android" title="Android">Android</a>
                         
-                          <a class="tag" href="/tags/#源码" title="源码">源码</a>
-                        
-                          <a class="tag" href="/tags/#View" title="View">View</a>
+                          <a class="tag" href="/tags/#Activity" title="Activity">Activity</a>
                         
                     </div>
                 </section>
