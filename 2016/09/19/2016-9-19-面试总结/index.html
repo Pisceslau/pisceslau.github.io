@@ -13,11 +13,11 @@
 
     <title>
         
-          剑指Offer-面试题44-扑克牌的顺子 - 文月的博客 | Warren Liu&#39;s Blog
+          2016.9.19-面试总结 - 文月的博客 | Warren Liu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://wenyueliu.com/2016/09/03/剑指Offer-面试题44-扑克牌的顺子/">
+    <link rel="canonical" href="http://wenyueliu.com/2016/09/19/2016-9-19-面试总结/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -169,16 +169,14 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#剑指Offer" title="剑指Offer">剑指Offer</a>
-                        
-                          <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                          <a class="tag" href="/tags/#面试" title="面试">面试</a>
                         
                     </div>
-                    <h1>剑指Offer-面试题44-扑克牌的顺子</h1>
+                    <h1>2016.9.19-面试总结</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Warren Liu on
-                        2016-09-03
+                        2016-09-19
                     </span>
                 </div>
             </div>
@@ -197,17 +195,80 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>​    昨日做了58同城的笔试题，里面涉及到了《剑指Offer》的题目，其中有一个就是面试题44：扑克牌的顺子，现复习一番。</p>
-<h3 id="题目："><a href="#题目：" class="headerlink" title="题目："></a>题目：</h3><p>​    从扑克牌中随机抽5张牌，判断是不是一个顺子， 即这5张牌是不是连续的。2～10为数字本身， A为1。 J为11、Q为12、 为13。大、小王可以看成任意数字。</p>
-<h3 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h3><ol>
-<li>把大小王都当做0，用于补充空缺。</li>
-<li>排序后的数组若不连续，相邻的数字隔若干个数字，统计数组中的0的数目。</li>
-<li>若0可以填充（0的数目大于等于相隔的数字的数目，即numberOfZero&gt;=numberOfGap）,数组还是有序的。</li>
-<li>此外值得注意的是：非0数字重复出现则不连续。（扑克牌含有对子，则不可能是顺子了）。</li>
+                <h2 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h2><p>今天上午九点左右本应该是考科目三的，然后秉着鱼和熊掌兼得的意思，在中秋节期间给该公司HR邮箱发了请求更改到下午面试的邮件，中秋过后，没想到确实更改到了下午面试。在此，向该公司表示诚挚的谢意！然而，科目三没有考成，因为相关的系统崩溃出故障了。因此，我只能半年以后再考了，因为答应了去深圳某公司实习，一不小心就会拖这么久。</p>
+<p><img src="http://ocnx69jd6.bkt.clouddn.com/galaxy_practice_by_redxen.jpg" alt="银河"></p>
+<p>这场面试，我是下午四点从学校出发的，打了滴滴的快车，然后顺利找到面试的酒店，然后去了23层楼，进行签到和面试。</p>
+<h2 id="面试过程："><a href="#面试过程：" class="headerlink" title="面试过程："></a>面试过程：</h2><p>第一眼见到面试官，就感觉很亲切，这位面试官给我留下的最深刻的印象就是：有礼貌。</p>
+<p>当我等候的时候，他带我进去面试的房间，一举一动都体现了相当高的素质。面试的一些问题简单介绍如下：</p>
+<ol>
+<li><p>你是民大的？从民大到这需要多久？</p>
+<p>这其实是一种寒暄语，我说打的滴滴过来的，大概二十分钟左右。</p>
+</li>
+<li><p>滴滴和Uber一些比较和省钱之类的问题</p>
+<p>我以为是考察我对一些实事是否了解和相关的看法。我回答我用滴滴，它和Uber （中国）合并的事情。但是面试官的意思可能不是这个，根据他的回答我觉得应该是有比较才会有鉴别的意思，我点头称是。</p>
+</li>
+<li><p>你是主要搞Android，iOS？以及为什么选择Android</p>
+<p>我回答当时没有苹果相关设备，于是接触Android，而且Android还有Java语言更为熟悉一些之类的，还有Android的开放性。</p>
+<blockquote>
+<p>问我这个问题以及接下来不问Android的问题，我觉得面试官不是搞Android开发的，很有可能是搞iOS相关亦或是技术主管。所以问我有无搞iOS的兴趣。我说：iOS和Android开发有许多相同的思想，日后接触iOS也是可以很快上手的。</p>
+</blockquote>
+<ol>
+<li><p>以前接触过该公司的产品么以及关注过58的APP么？</p>
+<p>我回答收购的事情。</p>
+<p>面试官：虽然如此，但也是二个APP。</p>
+<p>我：恩是的，高三的时候一位朋友手机喜新厌旧，经常卖掉手机然后换新的，就是利用这样的平台。</p>
+</li>
+<li><p>Java的LinkedList和ArrayList的区别？</p>
+<p>一、同步性：ArrayList、LinkedList不同步，非线程安全，Vector线程安全，同步、性能也就相对较低。</p>
+<p>二、数据增长：ArrayList增长为50%，Vector增长为原来的一倍因此适合大量的数据。</p>
+<p>三、检索与删除、增加性能：ArrayList/Vector在末尾增删复杂度O(1),检索指定的位置复杂度O(1),在其他地方增删复杂度O(n-i),之后的都要移动</p>
+<p>​        LinkedList:检索性能低（因为链标表的原因），O(i)增删的效率高（仅仅改变指针的指向）O(1)</p>
+<p>四、实现方式：ArrayList/Vector类似数组的方式。LinkedList是双向链表方式。</p>
+</li>
+<li><p>增加几百万数据使用哪种?</p>
+<p>根据问题5，我选择了LinkedList。</p>
+</li>
+<li><p>HashMap和HashTable的区别？</p>
+<p>HashMap是线程不安全、非同步的，键值允许为空（null）的，HashTable是线程安全、同步的、键值不允许为空的。</p>
+<blockquote>
+<p>键值哪个为空的，我似乎说反了。</p>
+</blockquote>
+<ol>
+<li>接触过ConcurrentHashMap么？</li>
 </ol>
-<h3 id="参考代码："><a href="#参考代码：" class="headerlink" title="参考代码："></a>参考代码：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> Algorithm;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.Arrays;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by Lunar on 2016/3/28.</div><div class="line"> * 剑指Offer第四十四题：扑克牌的顺子</div><div class="line"> * 题目：从扑克牌中随机抽5张牌，判断是不是一个顺子，即这5张牌是不是连续的，2~10为数字本身</div><div class="line"> * ，A为1，J为11，Q为1前12，K为13，而大小王可以看做是任意数字</div><div class="line"> * 思路：首先排序，不是连续的话，看数之间相隔的若干个数字，但只要我们有足够的0就可以补满这二个数字的空缺，这个</div><div class="line"> * 数组实际上还是有序的，因为大小王可以当做是任意的数字，默认值为0</div><div class="line"> * 注意：非0的数字重复则为不是顺子</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IsContinuous</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 求是否连续的方法</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> a 输入数组</div><div class="line">     * <span class="doctag">@return</span> 是否连续</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isContinuous</span><span class="params">(<span class="keyword">int</span>[] a)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (a == <span class="keyword">null</span> || a.length &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        Arrays.sort(a);<span class="comment">//首先使用快速排序排序数组，使之成为可能有0在左侧的按顺序排序的数组</span></div><div class="line">        <span class="comment">//统计排序后的数组的0的个数</span></div><div class="line">        <span class="keyword">int</span> numberOfZero = <span class="number">0</span>;<span class="comment">//0的个数</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; a.length; i++) &#123;</div><div class="line">            <span class="keyword">if</span> (a[i] == <span class="number">0</span>) numberOfZero++;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//统计间隔的数目</span></div><div class="line">        <span class="keyword">int</span> numberOfGap = <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> left = numberOfZero;<span class="comment">//左边数下标,left就是第一个非零数的下标</span></div><div class="line">        <span class="keyword">int</span> right = left + <span class="number">1</span>;<span class="comment">//右边数的下标</span></div><div class="line"></div><div class="line">        <span class="keyword">while</span> (right &lt; a.length) &#123;</div><div class="line">            <span class="comment">//如果相等则不是顺子</span></div><div class="line">            <span class="keyword">if</span> (a[left] == a[right]) <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">            numberOfGap += a[right] - a[left] - <span class="number">1</span>;<span class="comment">//间隔几个连续数字</span></div><div class="line">            <span class="comment">//左右数右移动</span></div><div class="line">            left = right;</div><div class="line">            right++;<span class="comment">//++right也可以，因为是一行语句。</span></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> numberOfGap &lt;= numberOfZero;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span>[] a = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</div><div class="line">        System.out.println(isContinuous(a));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>其他题目代码请参考：</strong> <a href="https://github.com/Pisceslau/Algorithm/" target="_blank" rel="external">这里</a></p>
-<p><strong>转载请注明出处</strong>。</p>
+<p>回答，接触过，ConcurrentHashMap可以说是HashMap的线程安全版本。内部没有使用HashTable那种重量级的锁，而是使用基于Lock的锁的方式。</p>
+<blockquote>
+<p>此处的知识还应该待补充。</p>
+</blockquote>
+<ol>
+<li>看你的简历，你有自己的博客和Github？博客和博客主要写一些什么内容？</li>
+</ol>
+<p>我表示Github主要写的是自己学习算法时候的记录，比如一些排序和搜索等等。算是自己的一种学习笔记。博客是今年8月30日开通的，主要记录些Android的内容，如事件拦截机制、Activity启动过程的源码分析。还有对一些面试和机试的感悟和记录。</p>
+<ol>
+<li><p>简历上的项目简单的介绍下？</p>
+<p>主要回答了，该项目的大致内容。</p>
+</li>
+<li><p>这个项目的聊天功能怎么实现的？大数据的情况下是否过载？</p>
+<p>我回答使用Jpush的软件开发包（结合教务系统）实现的。是否过载这应该看Jpush方面，在某一个值会进行收费情况。</p>
+</li>
+<li><p>你有什么要问我的么？</p>
+<p>我问了（1）Android如今出了很多东西比如RxJava，RxBinding，React-native，那么Android开发者对这些新事物、新趋势抱着什么态度还有原生开发方面，请给出一些建议。</p>
+<p>面试官主要解释了技术方向学习的广度和深度的问题。</p>
+<p>（2）贵公司针对大量数据的情况是怎么处理的？</p>
+<p>面试官主要解释了可以客户端限制用户发起请求的次数等方式。说了很多，不过我没太记住（笑）。</p>
+<blockquote>
+<p>这个问题可以说是必问的问题了。大家可以实现准备 一些。不要问技术面试官工资之类的问题！这问题是要问HR的。问一些技术方面的和公司相关业务的是比较好。可以事先准备好。</p>
+</blockquote>
+<h2 id="后记："><a href="#后记：" class="headerlink" title="后记："></a>后记：</h2><p>结束面试后，面试官十分有礼貌的与我握手，我也有礼貌的回应，十分尊重每一位求职者的面试官真是让人充满敬意。</p>
+<p>签到的时候看到很多份简历，都是黑白的，我是彩色打印的。也是体现我的一个态度吧，虽说不一定会过这次初面，并且过几日不在武汉，即使有二面也不知道能否参加，不免遗憾。</p>
+<p>​     完。</p>
+<p>​                            </p>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
 
 
                 <hr>
@@ -217,11 +278,11 @@
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="2016/09/03/剑指Offer-面试题44-扑克牌的顺子/"
-                    data-title="剑指Offer-面试题44-扑克牌的顺子"
-                    data-url="http://wenyueliu.com/2016/09/03/剑指Offer-面试题44-扑克牌的顺子/"
+                    data-thread-key="2016/09/19/2016-9-19-面试总结/"
+                    data-title="2016.9.19-面试总结"
+                    data-url="http://wenyueliu.com/2016/09/19/2016-9-19-面试总结/"
                     data-images=""
-                    data-content="​    昨日做了58同城的笔试题，里面涉及到了《剑指Offer》的题目，其中有一个就是面试题... | 文月的博客 | Warren Liu&#39;s Blog " >
+                    data-content="前言：今天上午九点左右本应该是考科目三的，然后秉着鱼和熊掌兼得的意思，在中秋节期间给该公司HR... | 文月的博客 | Warren Liu&#39;s Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -239,13 +300,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2016/09/03/剑指Offer-面试题37-两个链表的第一个公共结点/" data-toggle="tooltip" data-placement="top" title="剑指Offer-面试题37-两个链表的第一个公共结点">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2016/09/02/剑指Offer面试题42：翻转单词顺序VS左旋转字符串/" data-toggle="tooltip" data-placement="top" title="剑指Offer面试题42：翻转单词顺序VS左旋转字符串">Next Post &rarr;</a>
+                            <a href="/2016/09/12/2016年9月12日视频面试总结/" data-toggle="tooltip" data-placement="top" title="2016年9月12日视频面试总结">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -254,9 +311,9 @@
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2016/09/03/剑指Offer-面试题44-扑克牌的顺子/"
-                        data-title="剑指Offer-面试题44-扑克牌的顺子"
-                        data-url="http://wenyueliu.com/2016/09/03/剑指Offer-面试题44-扑克牌的顺子/" >
+                        data-thread-key="2016/09/19/2016-9-19-面试总结/"
+                        data-title="2016.9.19-面试总结"
+                        data-url="http://wenyueliu.com/2016/09/19/2016-9-19-面试总结/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
@@ -282,9 +339,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#剑指Offer" title="剑指Offer">剑指Offer</a>
-                        
-                          <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                          <a class="tag" href="/tags/#面试" title="面试">面试</a>
                         
                     </div>
                 </section>
