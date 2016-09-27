@@ -13,11 +13,11 @@
 
     <title>
         
-          2016.9.19-面试总结 - 文月的博客 | Warren Liu&#39;s Blog
+          Java虚拟机学习 - 文月的博客 | Warren Liu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://wenyueliu.com/2016/09/19/2016-9-19-面试总结/">
+    <link rel="canonical" href="http://wenyueliu.com/2016/09/27/Java虚拟机学习/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -169,14 +169,14 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#面试" title="面试">面试</a>
+                          <a class="tag" href="/tags/#JVM" title="JVM">JVM</a>
                         
                     </div>
-                    <h1>2016.9.19-面试总结</h1>
+                    <h1>Java虚拟机学习</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Warren Liu on
-                        2016-09-19
+                        2016-09-27
                     </span>
                 </div>
             </div>
@@ -195,80 +195,42 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h2 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h2><p>今天上午九点左右本应该是考科目三的，然后秉着鱼和熊掌兼得的意思，在中秋节期间给该公司HR邮箱发了请求更改到下午面试的邮件，中秋过后，没想到确实更改到了下午面试。在此，向该公司表示诚挚的谢意！然而，科目三没有考成，因为相关的系统崩溃出故障了。因此，我只能半年以后再考了，因为答应了去深圳某公司实习，一不小心就会拖这么久。</p>
-<p><img src="http://ocnx69jd6.bkt.clouddn.com/galaxy_practice_by_redxen.jpg" alt="银河"></p>
-<p>这场面试，我是下午四点从学校出发的，打了滴滴的快车，然后顺利找到面试的酒店，然后去了23层楼，进行签到和面试。</p>
-<h2 id="面试过程："><a href="#面试过程：" class="headerlink" title="面试过程："></a>面试过程：</h2><p>第一眼见到面试官，就感觉很亲切，这位面试官给我留下的最深刻的印象就是：有礼貌。</p>
-<p>当我等候的时候，他带我进去面试的房间，一举一动都体现了相当高的素质。面试的一些问题简单介绍如下：</p>
-<ol>
-<li><p>你是民大的？从民大到这需要多久？</p>
-<p>这其实是一种寒暄语，我说打的滴滴过来的，大概二十分钟左右。</p>
+                <p>[TOC]</p>
+<h2 id="一、内存模型以及分区："><a href="#一、内存模型以及分区：" class="headerlink" title="一、内存模型以及分区："></a>一、内存模型以及分区：</h2><p>运行时数据区主要分为：<strong>虚拟机栈(VM Stack)</strong>，<strong>本地方法栈（Native Method Stack）</strong>，<strong>程序计数器</strong>，<strong>方法区(Method Area)</strong>，<strong>堆(Heap)</strong>。</p>
+<p>其中线程共享的区域是：方法区和堆。线程隔离的是虚拟机栈，本地方法栈，程序计数器。</p>
+<p>程序计数器：是当前线程所执行的字节码的行号指示器，线程私有（相互隔离），唯一没规定OOM Error的区域。</p>
+<p>虚拟机栈：线程私有，描述Java方法执行的内存模型，栈帧用于存储局部变量表（该表存放了编译期可知的各种基本数据类型，如boolean、byte、char、short、int、float、long、double，对象引用。进入一个方法，这个方法需要多少在帧中分配多大的局部变量空间是完全确定的，在方法运行期间不会改变局部变量表的大小），操作数栈、动态链接、方法入口等信息、方法调用执行完成对应一个栈帧入栈出栈的过程。 </p>
+<p>本地方法栈：VM Stack为Java本地字节码服务，Native Method Stack为Native方法服务。</p>
+<p>堆：线程共享，VM启动时候创建，存放对象的实例（和数组），垃圾收集器管理的主要区域。可分为：<em>新生代</em>、<em>老生代</em>.。（Eden, From Survivor,To Survivor）。</p>
+<p>方法区：线程共享，存放已被VM加载的类信息常量、静态变量、即时编译器编译后的代码与数据。方法区<strong>包含</strong>运行时常量池。Class文件除了有<em>类的版本、字段、方法接口</em>等描述信息外， 还有一项信息是常量池，用于存放编译期生成的各种字面量和符号引用，这部分内容将在类加载后进入方法区的运行时常量池中存放。运行时常量池相对于Class文件常量池的一个重要特征是具备动态性。</p>
+<h2 id="二、GC的二种判定方法：引用计数、引用链（可达性分析）："><a href="#二、GC的二种判定方法：引用计数、引用链（可达性分析）：" class="headerlink" title="二、GC的二种判定方法：引用计数、引用链（可达性分析）："></a>二、GC的二种判定方法：引用计数、引用链（可达性分析）：</h2><p>引用计数算法会导致循环引用的问题，可达性分析GC Roots，可作为GC Roots的对象为：VM Stack（栈帧中的本地变量表）中引用的对象；方法区中类静态属性引用的对象。本地方法栈中JNI即一般说的Native方法引用的对象。</p>
+<h2 id="三、GC三种收集方法：标记清除、标记整理、复制算法原理和特点，分别用在什么地方？"><a href="#三、GC三种收集方法：标记清除、标记整理、复制算法原理和特点，分别用在什么地方？" class="headerlink" title="三、GC三种收集方法：标记清除、标记整理、复制算法原理和特点，分别用在什么地方？"></a>三、GC三种收集方法：标记清除、标记整理、复制算法原理和特点，分别用在什么地方？</h2><ol>
+<li><p>Mark-Sweep（标记清除）：</p>
+<p>缺点：效率问题和内存碎片，无法找到连续内存而不得不提前出发另一次GC动作。</p>
 </li>
-<li><p>滴滴和Uber一些比较和省钱之类的问题</p>
-<p>我以为是考察我对一些实事是否了解和相关的看法。我回答我用滴滴，它和Uber （中国）合并的事情。但是面试官的意思可能不是这个，根据他的回答我觉得应该是有比较才会有鉴别的意思，我点头称是。</p>
+<li><p>Copy（复制算法）：</p>
+<p>解决效率问题，内存分为二个大小相等的二块，每次使用其中的一块。当这一块内存用完了就将还存活的对象复制到另外一块上面。然后再把已使用过的内存空间一次清理掉。</p>
+<p>缺点：内存变为一半。改进：分为Eden : From Survivor : To Survivor = 8 : 1 : 1.每次使用Eden和其中一块Survivor，大多数的新生代对象朝生夕死，若多于10%，Survivor不够用了，那么依赖其他内存老年代分配担保。</p>
+<p>优点：无碎片，效率有保证。</p>
 </li>
-<li><p>你是主要搞Android，iOS？以及为什么选择Android</p>
-<p>我回答当时没有苹果相关设备，于是接触Android，而且Android还有Java语言更为熟悉一些之类的，还有Android的开放性。</p>
-<blockquote>
-<p>问我这个问题以及接下来不问Android的问题，我觉得面试官不是搞Android开发的，很有可能是搞iOS相关亦或是技术主管。所以问我有无搞iOS的兴趣。我说：iOS和Android开发有许多相同的思想，日后接触iOS也是可以很快上手的。</p>
-</blockquote>
-<ol>
-<li><p>以前接触过该公司的产品么以及关注过58的APP么？</p>
-<p>我回答收购的事情。</p>
-<p>面试官：虽然如此，但也是二个APP。</p>
-<p>我：恩是的，高三的时候一位朋友手机喜新厌旧，经常卖掉手机然后换新的，就是利用这样的平台。</p>
+<li><p>标记整理：</p>
+<p>主要是老年代的，复制算法当对象存活效率高的话，多次复制效率变低下。与标记Sweep区别在于让存活的对象都向一端移动，然后直接清理掉端边界以外的内存。</p>
 </li>
-<li><p>Java的LinkedList和ArrayList的区别？</p>
-<p>一、同步性：ArrayList、LinkedList不同步，非线程安全，Vector线程安全，同步、性能也就相对较低。</p>
-<p>二、数据增长：ArrayList增长为50%，Vector增长为原来的一倍因此适合大量的数据。</p>
-<p>三、检索与删除、增加性能：ArrayList/Vector在末尾增删复杂度O(1),检索指定的位置复杂度O(1),在其他地方增删复杂度O(n-i),之后的都要移动</p>
-<p>​        LinkedList:检索性能低（因为链标表的原因），O(i)增删的效率高（仅仅改变指针的指向）O(1)</p>
-<p>四、实现方式：ArrayList/Vector类似数组的方式。LinkedList是双向链表方式。</p>
-</li>
-<li><p>增加几百万数据使用哪种?</p>
-<p>根据问题5，我选择了LinkedList。</p>
-</li>
-<li><p>HashMap和HashTable的区别？</p>
-<p>HashMap是线程不安全、非同步的，键值允许为空（null）的，HashTable是线程安全、同步的、键值不允许为空的。</p>
-<blockquote>
-<p>键值哪个为空的，我似乎说反了。</p>
-</blockquote>
-<ol>
-<li>接触过ConcurrentHashMap么？</li>
-</ol>
-<p>回答，接触过，ConcurrentHashMap可以说是HashMap的线程安全版本。内部没有使用HashTable那种重量级的锁，而是使用基于Lock的锁的方式。</p>
-<blockquote>
-<p>此处的知识还应该待补充。</p>
-</blockquote>
-<ol>
-<li>看你的简历，你有自己的博客和Github？博客和博客主要写一些什么内容？</li>
-</ol>
-<p>我表示Github主要写的是自己学习算法时候的记录，比如一些排序和搜索等等。算是自己的一种学习笔记。博客是今年8月30日开通的，主要记录些Android的内容，如事件拦截机制、Activity启动过程的源码分析。还有对一些面试和机试的感悟和记录。</p>
-<ol>
-<li><p>简历上的项目简单的介绍下？</p>
-<p>主要回答了，该项目的大致内容。</p>
-</li>
-<li><p>这个项目的聊天功能怎么实现的？大数据的情况下是否过载？</p>
-<p>我回答使用Jpush的软件开发包（结合教务系统）实现的。是否过载这应该看Jpush方面，在某一个值会进行收费情况。</p>
-</li>
-<li><p>你有什么要问我的么？</p>
-<p>我问了（1）Android如今出了很多东西比如RxJava，RxBinding，React-native，那么Android开发者对这些新事物、新趋势抱着什么态度还有原生开发方面，请给出一些建议。</p>
-<p>面试官主要解释了技术方向学习的广度和深度的问题。</p>
-<p>（2）贵公司针对大量数据的情况是怎么处理的？</p>
-<p>面试官主要解释了可以客户端限制用户发起请求的次数等方式。说了很多，不过我没太记住（笑）。</p>
-<blockquote>
-<p>这个问题可以说是必问的问题了。大家可以实现准备 一些。不要问技术面试官工资之类的问题！这问题是要问HR的。问一些技术方面的和公司相关业务的是比较好。可以事先准备好。</p>
-</blockquote>
-<h2 id="后记："><a href="#后记：" class="headerlink" title="后记："></a>后记：</h2><p>结束面试后，面试官十分有礼貌的与我握手，我也有礼貌的回应，十分尊重每一位求职者的面试官真是让人充满敬意。</p>
-<p>签到的时候看到很多份简历，都是黑白的，我是彩色打印的。也是体现我的一个态度吧，虽说不一定会过这次初面，并且过几日不在武汉，即使有二面也不知道能否参加，不免遗憾。</p>
-<p>​     完。</p>
-<p>​                            </p>
+<li><p>分代收集法：</p>
+<p>新生代大批对象死去，少量存活使用复制算法。老年代存活率高，没有额外空间对它进行分配担保，就必须使用Sweep或者整理算法。</p>
 </li>
 </ol>
-</li>
-</ol>
-</li>
-</ol>
+<h2 id="四、GC收集器有哪些？CMS收集器与G1收集器的特点。"><a href="#四、GC收集器有哪些？CMS收集器与G1收集器的特点。" class="headerlink" title="四、GC收集器有哪些？CMS收集器与G1收集器的特点。"></a>四、GC收集器有哪些？CMS收集器与G1收集器的特点。</h2><p>Serial:单线程, GC时，必须暂停其它所有工作线程，直到其收集结束。Client模式默认新生代收集器。</p>
+<p>ParNew:Serial的多线程版本，Server模式下，首选的新生代收集器（除Serial外，目前只有它能与CMS配合工作）</p>
+<p>Parallel Scavenger:新生代，使用复制算法，并行多线程的，目标是达到一个可控制的吞吐量，（吞吐量优先收集器）</p>
+<p>Serial Old: Serial的老年代版本，单线程，使用标记-清理算法，主要在Client模式，若Server模式，JDK 1.5之前与Parallel Scavenger配合使用，是作为CMS收集器的后备预案。          </p>
+<p> Parallel Old: Parallel Scavenger的老年代版本，多线程,标记整理算法，JDK 1.6开始提供，注重吞吐量以及CPU资源敏感的场合，都可以优先考虑Parallel Scavenger加Parallel Old的收集器。 </p>
+<p> CMS: Concurrent Mark Sweep，一种以获取最短停顿时间目标，基于标记-清除算法，总体来说，CMS的回收过程，与用户线程并发执行。缺点：1. 对CPU资源敏感 2.无法处理浮动垃圾，可能出现Concurrent Mode Failture导致另外一次Full GC，标记清除算法的空间碎片过多给大对象分配带来麻烦。    </p>
+<p>G1:Garbage First,面向服务端应用，特点：并行与并发，分代收集，空间整合（整体看是标记整理算法，局部看是复制算法，G1 运行期间不会产生内存空间碎片，可提供规整可用的内存。）可预测的停顿。 虽然保留新老生代的概念，但是将整个堆划分成多个大小相等的独立区域，跟踪Region里垃圾优先回收价值最大的Region.</p>
+<h2 id="五、MinorGC，FullGC分别再什么时候发生"><a href="#五、MinorGC，FullGC分别再什么时候发生" class="headerlink" title="五、MinorGC，FullGC分别再什么时候发生?"></a>五、MinorGC，FullGC分别再什么时候发生?</h2><p>Minor GC是新生代GC，Full GC是老年代GC，对象优先在Eden分配，Eden空间不够分配，则Minor GC。MinorGC指的是发生在新生代的GC动作，因为Java对象大多具备朝生夕灭的，所以MinorGC非常频繁，一般回收速度也快。</p>
+<p>FullGC是老年代，出现MajorGC经常会伴随至少一次的MinorGC，但非绝对的。大对象直接进入老年代，长期存活的对象将进入老年代，Eden出生的对象，第一次MinorGC后仍然存活，并且Survivor可以容纳就移动到Survivor中，在Survivor中每熬过一次MinorGC，年龄就增加1岁 ，年龄达到一定程度就会晋升到老年代中。</p>
+<p>动态年龄判定：Survivor中相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代，无须等到MaxTenuringThreshold中要求的年龄。</p>
+<p>空间分配担保：在发生MinorGC之前，虚拟机会检查老年代最大可用连续空间是否大于新生代所有对象总空间，成立则MinorGC可以确保安全的，不成立则查看HandlePromotionFailure设置值是否允许空间担保失败，如果允许则会继续检查老年代最大可用连续空间是否大于历次晋升到老年代对象的平均大小，如果大于则尝试进行MinorGC，尽管是有风险的，如果小于，或者HandlePromotionFailure不允许冒险，那这时候也要改为进行一次Full GC。JDK 6 Update 24之后的规则设置为只要老年代的连续空间大于新生代对象总大小或者历次晋升的平均大小就会进行MinorGC ,否则进行Full GC。</p>
 
 
                 <hr>
@@ -278,11 +240,12 @@
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="2016/09/19/2016-9-19-面试总结/"
-                    data-title="2016.9.19-面试总结"
-                    data-url="http://wenyueliu.com/2016/09/19/2016-9-19-面试总结/"
+                    data-thread-key="2016/09/27/Java虚拟机学习/"
+                    data-title="Java虚拟机学习"
+                    data-url="http://wenyueliu.com/2016/09/27/Java虚拟机学习/"
                     data-images=""
-                    data-content="前言：今天上午九点左右本应该是考科目三的，然后秉着鱼和熊掌兼得的意思，在中秋节期间给该公司HR... | 文月的博客 | Warren Liu&#39;s Blog " >
+                    data-content="[TOC]
+一、内存模型以及分区：运行时数据区主要分为：虚拟机栈(VM Stack)，本地方法... | 文月的博客 | Warren Liu&#39;s Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -300,13 +263,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2016/09/27/Java虚拟机学习/" data-toggle="tooltip" data-placement="top" title="Java虚拟机学习">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2016/09/12/2016年9月12日视频面试总结/" data-toggle="tooltip" data-placement="top" title="2016年9月12日视频面试总结">Next Post &rarr;</a>
+                            <a href="/2016/09/19/2016-9-19-面试总结/" data-toggle="tooltip" data-placement="top" title="2016.9.19-面试总结">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -315,9 +274,9 @@
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2016/09/19/2016-9-19-面试总结/"
-                        data-title="2016.9.19-面试总结"
-                        data-url="http://wenyueliu.com/2016/09/19/2016-9-19-面试总结/" >
+                        data-thread-key="2016/09/27/Java虚拟机学习/"
+                        data-title="Java虚拟机学习"
+                        data-url="http://wenyueliu.com/2016/09/27/Java虚拟机学习/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
@@ -343,7 +302,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#面试" title="面试">面试</a>
+                          <a class="tag" href="/tags/#JVM" title="JVM">JVM</a>
                         
                     </div>
                 </section>
