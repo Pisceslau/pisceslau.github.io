@@ -101,7 +101,7 @@
 
                         
                         <li>
-                            <a href="/life/">Tags</a>
+                            <a href="/life/">Life</a>
                         </li>
                         
                     
@@ -231,6 +231,25 @@
 <p>FullGC是老年代，出现MajorGC经常会伴随至少一次的MinorGC，但非绝对的。大对象直接进入老年代，长期存活的对象将进入老年代，Eden出生的对象，第一次MinorGC后仍然存活，并且Survivor可以容纳就移动到Survivor中，在Survivor中每熬过一次MinorGC，年龄就增加1岁 ，年龄达到一定程度就会晋升到老年代中。</p>
 <p>动态年龄判定：Survivor中相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代，无须等到MaxTenuringThreshold中要求的年龄。</p>
 <p>空间分配担保：在发生MinorGC之前，虚拟机会检查老年代最大可用连续空间是否大于新生代所有对象总空间，成立则MinorGC可以确保安全的，不成立则查看HandlePromotionFailure设置值是否允许空间担保失败，如果允许则会继续检查老年代最大可用连续空间是否大于历次晋升到老年代对象的平均大小，如果大于则尝试进行MinorGC，尽管是有风险的，如果小于，或者HandlePromotionFailure不允许冒险，那这时候也要改为进行一次Full GC。JDK 6 Update 24之后的规则设置为只要老年代的连续空间大于新生代对象总大小或者历次晋升的平均大小就会进行MinorGC ,否则进行Full GC。</p>
+<h2 id="六、双亲委派模型"><a href="#六、双亲委派模型" class="headerlink" title="六、双亲委派模型"></a>六、双亲委派模型</h2><p>启动类加载器（Boostrap Classloader）<java_home>\lib目录</java_home></p>
+<p>扩展类加载器（Extension Classloader）<java_home>\lib\ext目录</java_home></p>
+<p>应用程序类加载器（Application Classloader） 系统类加载器 Classpath指定类库（默认）</p>
+<p>自定义类加载器（User Classloader）</p>
+<p>2个类来源于同一个Class，被同一个VM加载，只要加载它们的类加载器不同，那么2个类必定不等。</p>
+<p><strong>工作过程</strong></p>
+<p>如果一个类加载器收到类加载请求，逐步委派给父类加载器，因此最终加载请求都应该传送到顶层的启动类加载器，当父加载器反映自己无法完成加载请求那么子加载器才会尝试加载。</p>
+<h2 id="七、分派"><a href="#七、分派" class="headerlink" title="七、分派"></a>七、分派</h2><p>Java是静态多分派、动态单分派的语言。</p>
+<p><strong>静态分派</strong>:Human man = new Man();前面的是静态类型，后面的是实际类型。静态类型编译期可知，实际类型运行期可以确定。重载根据参数静态类型作判定依据。<strong>所有依赖静态类型来定位方法执行版本的分派动作可以为静态分派</strong>。典型应用是重载。</p>
+<p><strong>动态分派</strong>:由于invokevirtual指令执行的第一步就是在运行期确定接收者的实际类型，所以2次调用中的invokevirtual指令把常量池中的类方法符号引用解析到了不同的直接引用上，这个过程就是Java语言中方法重写的本质。invoke步骤:</p>
+<ol>
+<li>操作数栈顶的第一个元素所指向的对象的实际类型记为C，</li>
+<li>如果在类型C中找到与常量中的描述符和简单名称都符合的方法，则访问权限校验通过则返回方法的直接引用，查找过程结束。不通过则IllegalAccessError异常。</li>
+<li>否则按照继承关系从下往上依次对C的各个父类进行第2步的搜索和校验。</li>
+<li>如果始终没有找到合适的方法，那么抛出java.lang.AbstracMethodError异常。</li>
+</ol>
+<p>方法接收者与方法参数统称为方法宗量，根据宗量多少分为单分派（一个宗量）和多分派（多个宗量），静态分派过程，选择目标方法的依据有：一是静态类型是什么，二是方法参数是什么，因为根据二个宗量所以是静态多分派的。</p>
+<p>运行阶段虚拟机过程，也就是动态分派。编译期已经决定方法的签名，唯一影响哪个目标方法方法接受者的实际类型。</p>
+<p>综上：Java目前是静态多分派，动态单分派的语言。</p>
 
 
                 <hr>
