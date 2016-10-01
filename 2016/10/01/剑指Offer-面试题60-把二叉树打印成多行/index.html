@@ -13,11 +13,11 @@
 
     <title>
         
-          Android Activity再学习(Activity生命周期,启动模式,Intent Filter匹配) - 文月的博客 | Warren Liu&#39;s Blog
+          剑指Offer-面试题60-把二叉树打印成多行 - 文月的博客 | Warren Liu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://wenyueliu.com/2016/08/30/Android-Activity再学习/">
+    <link rel="canonical" href="http://wenyueliu.com/2016/10/01/剑指Offer-面试题60-把二叉树打印成多行/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -169,16 +169,16 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                          <a class="tag" href="/tags/#剑指Offer" title="剑指Offer">剑指Offer</a>
                         
-                          <a class="tag" href="/tags/#读书笔记" title="读书笔记">读书笔记</a>
+                          <a class="tag" href="/tags/#算法" title="算法">算法</a>
                         
                     </div>
-                    <h1>Android Activity再学习(Activity生命周期,启动模式,Intent Filter匹配)</h1>
+                    <h1>剑指Offer-面试题60-把二叉树打印成多行</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Warren Liu on
-                        2016-08-30
+                        2016-10-01
                     </span>
                 </div>
             </div>
@@ -197,37 +197,18 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>本文参考了任玉刚前辈的《Android开发艺术探索》  一书，可以说是该书相关内容的读书笔记。</p>
-<h3 id="（一）-Activity生命周期："><a href="#（一）-Activity生命周期：" class="headerlink" title="（一） Activity生命周期："></a>（一） Activity生命周期：</h3><p>正常启动：onCreate-&gt;onStart-&gt;onResume</p>
-<p>再回到：onRestart-&gt;onStart-&gt;onResume</p>
-<p>back键：onPause-&gt;onStop-&gt;onDestroy</p>
-<p> 到桌面或者打开新的：onPause-&gt;onStop</p>
-<p>onStart，onStop：是否可见</p>
-<p>onResume，onPause着重是否位于前台</p>
-<p>栈顶Activity需要先onPause,新Activity才能启动 onPause(旧）-&gt;onCreate-&gt;onStart-&gt;onResume-&gt;onStop（旧），  所以不能再onPause中做重量级的操作，应该在onStop中做操作，从而新的Activity尽快显示出来。</p>
-<p>异常情况：</p>
-<p>(1)资源相关配置改变（如横竖屏幕）</p>
-<p>onPause与onSaveInstanceState方法顺序不定-&gt;onStop-&gt;onDestroy，onSaveInstanceState方法保存的Bundle对象传递给onRestoreInstanceState和onCreate方法，重新创建的Activity  onCreate-&gt;onStart()-&gt;onRestoreInstanceState方法 取出Bundle并恢复数据。Activity委托Window保存数据，Window委托VIewGroup（DecorView)保存，ViewGroup委托View保存数据，典型的委托思想。推荐使用onRestoreInstanceState恢复数据，因为该bundle参数一旦有值，一定非空，而onCreate 则需要判断。</p>
-<pre><code>(2)资源内存不导致优先级低的Activity被杀死
-</code></pre><p>优先级高低情况：1.前台Activity最高 2.可见非前台次之 3,.后台Activity最低。</p>
-<p>若某项内容改变我们不需要让系统重新创建Activity可指定configChanges属性，会调用onConfigurationChanged方法，我们可以做些自己的特殊处理。</p>
-<h3 id="（二）Activity的launchMode（启动模式）"><a href="#（二）Activity的launchMode（启动模式）" class="headerlink" title="（二）Activity的launchMode（启动模式）"></a>（二）Activity的launchMode（启动模式）</h3><h4 id="（1）standard"><a href="#（1）standard" class="headerlink" title="（1）standard"></a>（1）standard</h4><p>标准的默认模式，是多实例的，谁启动了该模式的Activity，该Activity便会进入启动了它的Activity的任务栈（TaskStack），相关错误：ApplicationContext启动standard的Activity报错，原因：非Activity的前者无所谓的任务栈。可以为待启动的Activity指定FLAG_ACTIVITY——NEW_TASK标志位，启动时候会为其创建一个新的任务栈（见singleTaask 模式）</p>
-<h4 id="（2）singleTop"><a href="#（2）singleTop" class="headerlink" title="（2）singleTop"></a>（2）singleTop</h4><p>栈顶复用模式：新的Activity已在栈顶，不重复创建，同时它的onNewIntent方法会被回调，onCreate，onStart不会被系统调用。存在该实例在任务栈中，但不在栈顶则还会重新创建。</p>
-<h4 id="（3）singleTask"><a href="#（3）singleTask" class="headerlink" title="（3）singleTask"></a>（3）singleTask</h4><p>栈内复用模式：activity栈内存在，就不重新创建。首先寻找任务栈是否存在，无：创建任务栈，放入启动的Activity。有：有该Activity的实例么？无：创建该Activity放入任务栈的栈顶。有：把该Activity调到栈顶并clearTop，同时onNewIntent也会回调。</p>
-<h4 id="（4）singleInstance"><a href="#（4）singleInstance" class="headerlink" title="（4）singleInstance"></a>（4）singleInstance</h4><p>单实例模式，加强版singleTask，具有singleTask 的特点，同时具有该模式的Activity单独位于一个任务栈。</p>
-<p>指定启动模式的方法：XML属性里面的launchMode属性，和Java代码里的intent。addFlags();</p>
-<h3 id="（三）Activity的Flags"><a href="#（三）Activity的Flags" class="headerlink" title="（三）Activity的Flags"></a>（三）Activity的Flags</h3><p>FLAG_ACTIVITY_NEW_TASK</p>
-<p>FLAG_ACTIVITY_SINGLE_TOP</p>
-<p>FLAG_ACTIVITY_CLEAR_TOP</p>
-<p>FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS</p>
-<h3 id="（四）Intent-Filters匹配"><a href="#（四）Intent-Filters匹配" class="headerlink" title="（四）Intent Filters匹配"></a>（四）Intent Filters匹配</h3><p>该知识点主要用于Android隐式调用Activity，需要intent可以匹配目标组件的IntentFilter中设置的过滤信息，在XML文件中的Intent-filter属性，包含action、category、data，intent-filter可以有多个，intent满足一个filter的data、action、category即可。（同时满足这三者）。那么这三者各自的匹配规则又是怎样的呢？</p>
-<p>action匹配规则：action是一个字符串形式，任何一个action相同即匹配成功</p>
-<p>category匹配规则：可以没有category，或者是一旦有category，不管有几个，每个都要与filter中任何一个category相同，系统调用startActivity和startActivityForResult自动为intent添加了DEFAULT这个category，所以这个category就可以匹配过滤规则，同时为了activity接受隐式的调用，就必须在intent-filter中添加“android.intent.category.DEFAULT”这个category。</p>
-<p>data的匹配规则：与action类似</p>
-<p>data的结构：由二部分组成URI和mimeType，后者指得是媒体类型如image/jpeg等。前者包含 scheme、port、path、pathPrefix、pathPattern</p>
-<p>分别指URI模式，主机名、URI端口号、路径信息。过滤规则没指定URI则默认为content、file。也就是说没有指定的话，intent的URI部分要有content或者file的scheme，为intent指定完整的data要使用setDataAndType方法，而不是分开的setData或者setType，以为这二个方法彼此清除对方的值（从源码可以看出是把对方的值置为空）</p>
-<p>隐式启动intent注意的地方在于：我们可以做判断看是否activity匹配我们的intent，使用PackageManager的resolveActivity方法或者intent的resolveActivity方法，找不到匹配的Activity返回null，同时，PackageManager的queryIntentActivities方法返回所有成功匹配的Activities（复数形式），前者是指最佳匹配。</p>
-<p>Android入口Activity的action为MAIN，category为LAUNCHER 缺一不可。</p>
+                <h2 id="题目"><a href="#题目" class="headerlink" title="题目:"></a>题目:</h2><p>从上到下按层打印二叉树，同一层的结点按从左到右的顺序打印，每一层打印到一行。例如，打印图中二叉树的结点为：</p>
+<blockquote>
+<p>8</p>
+<p>6 10</p>
+<p>5 7 9 11</p>
+</blockquote>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路:"></a>思路:</h2><p>本题目与本博客的<a href="http://wenyueliu.com/2016/10/01/%E5%89%91%E6%8C%87Offer-%E9%9D%A2%E8%AF%95%E9%A2%9823-%E4%BB%8E%E4%B8%8A%E5%BE%80%E4%B8%8B%E6%89%93%E5%8D%B0%E4%BA%8C%E5%8F%89%E6%A0%91-%E6%8C%89%E5%B1%82%E6%AC%A1%E9%81%8D%E5%8E%86%E4%BA%8C%E5%8F%89%E6%A0%91/">剑指Offer-面试题23-从上到下打印二叉树</a>的思路其实差不多，代码也差不多。唯一的不同在于为了每一层一行输出，我们添加了二个变量，一个变量<code>toBePrinted</code>表示当前层中还没有打印（也就是本层待打印）的结点数，一个变量<code>nextLevel</code>表示下一层结点的数目。toBePrinted初始化为1 是因为根结点正在队列中，所以待打印的结点数目为1。在打印一个结点的时候若它还有子结点则把子结点放入队列中，同时nextLevel增加，因为相当于下一层结点（左右子节点）增加了。</p>
+<h2 id="参考代码"><a href="#参考代码" class="headerlink" title="参考代码:"></a>参考代码:</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> Algorithm; </div><div class="line"> </div><div class="line"><span class="keyword">import</span> java.util.LinkedList;</div><div class="line"><span class="keyword">import</span> java.util.List;</div><div class="line"> </div><div class="line"><span class="comment">/** </span></div><div class="line"> * Created by Lunar on 2016/3/31. </div><div class="line"> * 剑指Offer第六十题：把二叉树打印成多行。 </div><div class="line"> * 题目：从上到下按层打印二叉树，同一层的结点按从左到右的顺序打印，每一层打印到 </div><div class="line"> * 一行。 </div><div class="line"> * 思路：一个变量表示在当前层中还没有打印的结点数，另一个变量表示下一层结点的数目 </div><div class="line"> */ </div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Print</span> </span>&#123; </div><div class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(BinaryTreeNode root)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span>;</div><div class="line">        <span class="comment">//使用LinkedList实现队列，因为这个插入删除快。 </span></div><div class="line">        List&lt;BinaryTreeNode&gt; nodes = <span class="keyword">new</span> LinkedList&lt;&gt;();</div><div class="line">        <span class="comment">//LinkedList&lt;BinaryTreeNode&gt; nodes = new LinkedList&lt;&gt;(); </span></div><div class="line">        <span class="comment">//首先把根结点放入队列中 </span></div><div class="line">        nodes.add(root);</div><div class="line">        <span class="comment">//初始化，下一行的数目和还没有打印的数目 </span></div><div class="line">        <span class="keyword">int</span> nextLevel = <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> toBePrinted = <span class="number">1</span>;</div><div class="line"> </div><div class="line">        <span class="keyword">while</span> (!nodes.isEmpty()) &#123;</div><div class="line">            <span class="comment">//首先不出队列仅仅是打印它的值 </span></div><div class="line">            <span class="comment">//peek 或者element方法也可以 </span></div><div class="line">            BinaryTreeNode node = nodes.get(<span class="number">0</span>);</div><div class="line">            <span class="comment">//BinaryTreeNode node = nodes.element(); </span></div><div class="line">            System.out.print(node.getValue() + <span class="string">" "</span>);</div><div class="line">            <span class="comment">//如果儿子结点不为空，则把他们加入队列并且下一行的数目增加 </span></div><div class="line">            <span class="keyword">if</span> (node.left != <span class="keyword">null</span>) &#123;</div><div class="line">                nodes.add(node.left);</div><div class="line">                nextLevel++;</div><div class="line">            &#125; </div><div class="line">            <span class="keyword">if</span> (node.right != <span class="keyword">null</span>) &#123;</div><div class="line">                nodes.add(node.right);</div><div class="line">                nextLevel++;</div><div class="line">            &#125; </div><div class="line">            <span class="comment">//把自己出列，会导致要打印的数目减少一 </span></div><div class="line">            nodes.remove(<span class="number">0</span>);</div><div class="line">            <span class="comment">//nodes.poll(); </span></div><div class="line">            toBePrinted--;</div><div class="line">            <span class="comment">//如果本行变为零0.说明要进行下一行的打印了，下一行的数目自然是要打印的数目了（toBePrinted == nextLevel; ） </span></div><div class="line">            <span class="keyword">if</span> (toBePrinted == <span class="number">0</span>) &#123;</div><div class="line">                System.out.println();</div><div class="line">                toBePrinted = nextLevel;</div><div class="line">                nextLevel = <span class="number">0</span>;</div><div class="line">            &#125; </div><div class="line">        &#125; </div><div class="line">    &#125; </div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        BinaryTreeNode n1 = <span class="keyword">new</span> BinaryTreeNode(<span class="number">8</span>);</div><div class="line">        BinaryTreeNode n2 = <span class="keyword">new</span> BinaryTreeNode(<span class="number">6</span>);</div><div class="line">        BinaryTreeNode n3 = <span class="keyword">new</span> BinaryTreeNode(<span class="number">10</span>);</div><div class="line">        BinaryTreeNode n4 = <span class="keyword">new</span> BinaryTreeNode(<span class="number">5</span>);</div><div class="line">        BinaryTreeNode n5 = <span class="keyword">new</span> BinaryTreeNode(<span class="number">7</span>);</div><div class="line">        BinaryTreeNode n6 = <span class="keyword">new</span> BinaryTreeNode(<span class="number">9</span>);</div><div class="line">        BinaryTreeNode n7 = <span class="keyword">new</span> BinaryTreeNode(<span class="number">11</span>);</div><div class="line"> </div><div class="line">        n1.left = n2;</div><div class="line">        n1.right = n3;</div><div class="line">        n2.left = n4;</div><div class="line">        n2.right = n5;</div><div class="line">        n3.left = n6;</div><div class="line">        n3.right = n7;</div><div class="line"> </div><div class="line">        print(n1);</div><div class="line">    &#125; </div><div class="line"> </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记:"></a>后记:</h2><ol>
+<li>根据<a href="http://wenyueliu.com/2016/10/01/%E5%89%91%E6%8C%87Offer-%E9%9D%A2%E8%AF%95%E9%A2%9823-%E4%BB%8E%E4%B8%8A%E5%BE%80%E4%B8%8B%E6%89%93%E5%8D%B0%E4%BA%8C%E5%8F%89%E6%A0%91-%E6%8C%89%E5%B1%82%E6%AC%A1%E9%81%8D%E5%8E%86%E4%BA%8C%E5%8F%89%E6%A0%91/">剑指Offer-面试题23-从上到下打印二叉树</a>中的后记所述，我谈到和记录到LinkedList的poll和element，peek等方法的异同，本题目注释中也体现了这一点，若静态类型为LinkedList则可以使用这些方法。</li>
+<li>写这篇博客我有一个想法就是：我可以结合看的左程云系列的算法课还有复习的算法和数据结构、《剑指Offer》等书籍结合着写博文。比如<strong>二叉树</strong>作为一个系列等，可以有二叉树的遍历相关，序列化等内容。并用一篇博文作为大纲。这样更可以增强知识的学习和算法、数据结构知识的巩固。</li>
+</ol>
 
 
                 <hr>
@@ -237,11 +218,11 @@
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="2016/08/30/Android-Activity再学习/"
-                    data-title="Android Activity再学习(Activity生命周期,启动模式,Intent Filter匹配)"
-                    data-url="http://wenyueliu.com/2016/08/30/Android-Activity再学习/"
+                    data-thread-key="2016/10/01/剑指Offer-面试题60-把二叉树打印成多行/"
+                    data-title="剑指Offer-面试题60-把二叉树打印成多行"
+                    data-url="http://wenyueliu.com/2016/10/01/剑指Offer-面试题60-把二叉树打印成多行/"
                     data-images=""
-                    data-content="本文参考了任玉刚前辈的《Android开发艺术探索》  一书，可以说是该书相关内容的读书笔记。... | 文月的博客 | Warren Liu&#39;s Blog " >
+                    data-content="题目:从上到下按层打印二叉树，同一层的结点按从左到右的顺序打印，每一层打印到一行。例如，打印图... | 文月的博客 | Warren Liu&#39;s Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -259,10 +240,10 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2016/09/01/剑指offer-面试题3-二维数组中的查找/" data-toggle="tooltip" data-placement="top" title="剑指offer-面试题3-二维数组中的查找">&larr; Previous Post</a>
-                        </li>
                     
+                        <li class="next">
+                            <a href="/2016/10/01/剑指Offer-面试题23-从上往下打印二叉树-按层次遍历二叉树/" data-toggle="tooltip" data-placement="top" title="剑指Offer-面试题23-从上往下打印二叉树(按层次遍历二叉树)">Next Post &rarr;</a>
+                        </li>
                     
                 </ul>
 
@@ -270,9 +251,9 @@
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2016/08/30/Android-Activity再学习/"
-                        data-title="Android Activity再学习(Activity生命周期,启动模式,Intent Filter匹配)"
-                        data-url="http://wenyueliu.com/2016/08/30/Android-Activity再学习/" >
+                        data-thread-key="2016/10/01/剑指Offer-面试题60-把二叉树打印成多行/"
+                        data-title="剑指Offer-面试题60-把二叉树打印成多行"
+                        data-url="http://wenyueliu.com/2016/10/01/剑指Offer-面试题60-把二叉树打印成多行/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
@@ -298,9 +279,9 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                          <a class="tag" href="/tags/#剑指Offer" title="剑指Offer">剑指Offer</a>
                         
-                          <a class="tag" href="/tags/#读书笔记" title="读书笔记">读书笔记</a>
+                          <a class="tag" href="/tags/#算法" title="算法">算法</a>
                         
                     </div>
                 </section>
