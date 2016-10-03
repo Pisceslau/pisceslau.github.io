@@ -13,11 +13,11 @@
 
     <title>
         
-          Java面试基础知识 - 文月的博客 | Warren Liu&#39;s Blog
+          剑指Offer-面试题64-数据流中的中位数 - 文月的博客 | Warren Liu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://wenyueliu.com/2016/09/11/Java面试基础知识总结/">
+    <link rel="canonical" href="http://wenyueliu.com/2016/10/03/剑指Offer-面试题-64-数据流中的中位数/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -162,16 +162,16 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#面试" title="面试">面试</a>
+                          <a class="tag" href="/tags/#剑指Offer" title="剑指Offer">剑指Offer</a>
                         
-                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                          <a class="tag" href="/tags/#算法" title="算法">算法</a>
                         
                     </div>
-                    <h1>Java面试基础知识</h1>
+                    <h1>剑指Offer-面试题64-数据流中的中位数</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Warren Liu on
-                        2016-09-11
+                        2016-10-03
                     </span>
                 </div>
             </div>
@@ -190,123 +190,17 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>此片文章主要是参考一片面经<a href="https://www.nowcoder.com/discuss/3043" target="_blank" rel="external">这里</a>,进行的部分解答，最初的手写稿在2016年的3月和4月，最近重新整理准备相关的校招面试，发布在此。</p>
-<h2 id="Java基础："><a href="#Java基础：" class="headerlink" title="Java基础："></a>Java基础：</h2><ol>
-<li>九种基本数据类型的大小以及它们的封装类。</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>基本类型</th>
-<th style="text-align:center">位数</th>
-<th style="text-align:center">字节数</th>
-<th style="text-align:center">包装类</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>int</td>
-<td style="text-align:center">32</td>
-<td style="text-align:center">4</td>
-<td style="text-align:center">Integer</td>
-</tr>
-<tr>
-<td>short</td>
-<td style="text-align:center">16</td>
-<td style="text-align:center">2</td>
-<td style="text-align:center">Short</td>
-</tr>
-<tr>
-<td>long</td>
-<td style="text-align:center">64</td>
-<td style="text-align:center">8</td>
-<td style="text-align:center">Long</td>
-</tr>
-<tr>
-<td>float</td>
-<td style="text-align:center">32</td>
-<td style="text-align:center">4</td>
-<td style="text-align:center">Float</td>
-</tr>
-<tr>
-<td>double</td>
-<td style="text-align:center">64</td>
-<td style="text-align:center">8</td>
-<td style="text-align:center">Double</td>
-</tr>
-<tr>
-<td>boolean</td>
-<td style="text-align:center">true/false</td>
-<td style="text-align:center">1或者4</td>
-<td style="text-align:center">Boolean</td>
-</tr>
-<tr>
-<td>char</td>
-<td style="text-align:center">16</td>
-<td style="text-align:center">2</td>
-<td style="text-align:center">Character</td>
-</tr>
-<tr>
-<td>void</td>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td style="text-align:center">Void</td>
-</tr>
-</tbody>
-</table>
-<p>总结：16位的有char,short. 32位的float，int 。64位的double,long.关于boolean请见<a href="http://www.jianshu.com/p/2f663dc820d0" target="_blank" rel="external">这篇</a>，</p>
-<ol>
-<li><p>equals()与==区别</p>
-<p>（1）基本类型，==是比较值是否相等</p>
-<p>（2）复合类型，==比较地址（引用）。Object类中的equals方法内部是==实现的也就是说默认的equals是比较二个对象引用是否相等。而许多类，如String，Integer等包装类，Date类覆盖了Object类的这个equals方法。String的equals就是比较二个字符串值是否相等了。<a href="http://www.cnblogs.com/zhxhdean/archive/2011/03/25/1995431.html" target="_blank" rel="external">参考链接</a></p>
-</li>
-<li><p>Object有哪些公用方法？</p>
-<p>clone,equals,hashcode,notify,notifyAll,finalize,wait(有无参数),toString。</p>
-</li>
-<li><p>Java的四种引用强软弱虚</p>
-<p>强：使用最普遍的引用，如果一个对象是强引用的，那么GC绝不会回收，当内存空间不够，宁愿报OOM Error异常，终止程序，也不会回收强引用来解决内存空间不够的问题。</p>
-<p>软：Soft，内存空间够则不回收，不够则回收。用来实现内存敏感的高速缓存。可以和引用队列联合使用。</p>
-<p>弱：Weak，更短暂的生命周期，GC管辖内存区域过程中，一旦发现弱引用对象则回收之。不管内存是否够。</p>
-<p>虚：Phantom，顾名思义，形同虚设，并不决定对象的生命周期，仅持虚引用和没有一样。任何时候都可能被回收，用途：跟踪对象被垃圾回收器回收的活动，虚引用必须和引用队列ReferenceQueue联合使用，GC回收一个对象发现还有虚引用，那么回收内存前会把其关联到引用队列 。</p>
-</li>
-<li><p>Hashcode的作用：</p>
-<p>函数返回散列值，也就是根据一定的规则把与对象有关的信息映射成为一个散列值，在集合中添加元素可以先看该元素的散列值，然后减少equals方法的调用次数，提高程序的效率，提高寻找对象的作用。</p>
-<p>两个对象相同则hashcode一样，两个hashcode相等，不一定说明它们是一个对象。但是hashcode不同必定二个对象是不同的。</p>
-<p>注意：重写equals方法必须也要重写hashcode方法！</p>
-</li>
-<li><p>ArrayList、LinkedList、Vector的区别</p>
-<p>三者都实现了java.util.List接口</p>
-<p>一、同步性：ArrayList、LinkedList不同步，非线程安全，Vector线程安全，同步、性能也就相对较低。</p>
-<p>二、数据增长：ArrayList增长为50%，Vector增长为原来的一倍因此适合大量的数据。</p>
-<p>三、检索与删除、增加性能：ArrayList/Vector在末尾增删复杂度O(1),检索指定的位置复杂度O(1),在其他地方增删复杂度O(n-i),之后的都要移动</p>
-<p>​        LinkedList:检索性能低（因为链标表的原因），O(i)增删的效率高（仅仅改变指针的指向）O(1)</p>
-<p>四、实现方式：ArrayList/Vector类似数组的方式。LinkedList是双向链表方式。</p>
-</li>
-<li><p>String、StringBuilder、StringBuffer的区别</p>
-<p>String不可变字符串，每次都是新建一个字符串，然后指针指向这个字符串。StringBuilder是线程不安全可变字符串的、StringBuffer是线程安全的可变字符串类。因为String每次都是新建字符串所以效率大多数低于StringBuffer.</p>
-<p>String s = “This”+”is”+”a String”;为什么比StringBuffer快呢？这是JVM对这种字符串字面值的拼接的优化。相当于一个“This is  a String”。String s = s1+s2+s3的方式则是按原来的方式（新建字符串）的方式。比StringBuffer的append拼接慢。</p>
-</li>
-<li><p>Map、Set、List、Queue、Stack特点</p>
-<p>Map是键值对存储。</p>
-<p>Set是不包含重复元素的集合。</p>
-<p>List(列表)： List的特征是其元素以线性方式存储，集合中可以存放重复对象。</p>
-<p>Queue是先进先出的队列。</p>
-<p>Stack后进先出的栈。</p>
-</li>
-<li><p>HashMap、HashTable区别</p>
-<p>HashMap是线程不安全、非同步的，键值允许为空（null）的，HashTable是线程安全、同步的、键值不允许为空的。</p>
-</li>
-<li><p>HashMap、ConcurrentHashMap的区别</p>
-<p>HashMap是线程不安全的，ConcurrentHashMap是线程安全的版本。HashTable的锁实现是对对象整体加锁。ConcurrentHashMap基于lock操作，锁住的不是整个对象。</p>
-</li>
-<li><p>TreeMap、HashMap、LinkedHashMap区别</p>
-<p>LinkedHashMap保存了插入的顺序。输出得到的输出顺序与输入一样，HashMap是随机存储。TreeMap实现了SortMap接口，按键值的升序排列。</p>
-<p>​                                                                                                       </p>
-<p>​                                                                        完成于9.11.2016，待更</p>
-<hr>
+                <h2 id="题目："><a href="#题目：" class="headerlink" title="题目："></a>题目：</h2><p>如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。</p>
+<h2 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h2><p>出于插入的效率和得到中位数的效率，数组和链表都不太可行，二叉搜索树的最坏情况也会导致$$O(n)$$ 的效率。大多数语言都没有实现AVL树。因此采用堆的方式，Java中优先队列<code>PriorityQueue</code>默认使用了小顶堆，很方便的改写为大顶堆。主要思路是：容器分为二部分，左部分作为大顶堆，右部分作为小顶堆。左边整体小于右边。若是数据是偶数的，则向右边添加数据，也就是向小顶堆中添加数据。（先向大顶堆中添加，然后把大顶堆中的最大的拿出来给小顶堆）。若是数据是奇数的，则向左边添加数据，也就是向大顶堆中添加数据。（先向小顶堆中添加，然后把小顶堆中的最小值拿出来给大顶堆）。这样可以保持左边的数据（大顶堆中的数据）永远满足小于右边（小顶堆的数据）。最后根据奇偶情况采用不用的策略取得中位数。</p>
+<h2 id="参考代码："><a href="#参考代码：" class="headerlink" title="参考代码："></a>参考代码：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> Algorithm;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.Comparator;</div><div class="line"><span class="keyword">import</span> java.util.PriorityQueue;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by Lunar on 2016/10/3.</div><div class="line"> * 剑指Offer-面试题64-数据流中的中位数</div><div class="line"> * 思路:使用最小堆和最大堆，Java中的优先队列PriorityQueue默认实现为最小堆。容器分为二部分，左部分作为大顶堆，右部分作为小顶堆。左边整体小于右边</div><div class="line"> * 若是数据是偶数的，则向右边添加数据，也就是向小顶堆中添加数据。（先向大顶堆中添加，然后把大顶堆中的最大的拿出来给小顶堆）</div><div class="line"> * 若是数据是奇数的，则向左边添加数据，也就是向大顶堆中添加数据。（先向小顶堆中添加，然后把小顶堆中的最小值拿出来给大顶堆）</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GetMedian</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">//优先队列默认实现了小顶堆</span></div><div class="line">    <span class="keyword">private</span> PriorityQueue&lt;Integer&gt; minHeap = <span class="keyword">new</span> PriorityQueue&lt;&gt;();</div><div class="line">    <span class="comment">//大顶堆</span></div><div class="line">    <span class="keyword">private</span> PriorityQueue&lt;Integer&gt; maxHeap = <span class="keyword">new</span> PriorityQueue&lt;&gt;(<span class="number">15</span>, <span class="keyword">new</span> Comparator&lt;Integer&gt;() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Integer o1, Integer o2)</span> </span>&#123;</div><div class="line">            <span class="keyword">return</span> o2 - o1;</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="comment">//插入方法</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(Integer num)</span> </span>&#123;</div><div class="line">        <span class="comment">//数据是偶数</span></div><div class="line">        <span class="keyword">if</span> (((minHeap.size() + maxHeap.size()) &amp; <span class="number">1</span>) == <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">//偶数要加入小顶堆，先进入大顶堆取最大的放小顶堆</span></div><div class="line">            maxHeap.offer(num);</div><div class="line">            <span class="keyword">int</span> filterMaxNumber = maxHeap.poll();</div><div class="line">            minHeap.offer(filterMaxNumber);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">//奇数要加入大顶堆，先加入小顶堆中去最小的放入大顶堆中</span></div><div class="line">            minHeap.offer(num);</div><div class="line">            <span class="keyword">int</span> filterMinNumber = minHeap.poll();</div><div class="line">            maxHeap.offer(filterMinNumber);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">getMedian</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">        <span class="comment">//数据是奇数，说明原来小大都是偶数，在偶数的情况下加了数据根据前面是</span></div><div class="line">        <span class="comment">//加在了小顶堆中，于是现在小顶堆是奇数，大顶堆是偶数，所以取小顶堆那个数</span></div><div class="line">        <span class="keyword">int</span> size = minHeap.size() + maxHeap.size();</div><div class="line">        <span class="keyword">if</span> ((size &amp; <span class="number">1</span>) == <span class="number">1</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Double(minHeap.peek());</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">return</span> (<span class="keyword">double</span>) (minHeap.peek() + maxHeap.peek()) / <span class="number">2</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        GetMedian m = <span class="keyword">new</span> GetMedian();</div><div class="line">        m.insert(<span class="number">6</span>);</div><div class="line">        m.insert(<span class="number">7</span>);</div><div class="line">        m.insert(<span class="number">5</span>);</div><div class="line">        m.insert(<span class="number">10</span>);</div><div class="line">        System.out.print(m.getMedian());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>本程序通过牛客AC。</p>
+<h2 id="后记："><a href="#后记：" class="headerlink" title="后记："></a>后记：</h2><ol>
+<li><p>方法<code>getMedian()</code>中的奇偶判断是这样的:</p>
+<blockquote>
+<p>数据是奇数，说明原来小大都是偶数，在偶数的情况下加了数据。根据前面插入情况可知道是加在了小顶堆中，于是现在小顶堆是奇数，大顶堆是偶数，所以取小顶堆那个数。</p>
+<p>数据是偶数，（说明原来是奇数，在奇数的情况下变为偶数是在插入到大顶堆的情况下的。所以现在是大顶堆是奇数，小顶堆是奇数。）于是要各自取<code>peek()</code>值，相加除以2得到最终的结果。</p>
 <p>​</p>
-<p>​</p>
-<p>​</p>
+</blockquote>
 <p>​</p>
 </li>
 </ol>
@@ -319,11 +213,11 @@
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="2016/09/11/Java面试基础知识总结/"
-                    data-title="Java面试基础知识"
-                    data-url="http://wenyueliu.com/2016/09/11/Java面试基础知识总结/"
+                    data-thread-key="2016/10/03/剑指Offer-面试题-64-数据流中的中位数/"
+                    data-title="剑指Offer-面试题64-数据流中的中位数"
+                    data-url="http://wenyueliu.com/2016/10/03/剑指Offer-面试题-64-数据流中的中位数/"
                     data-images=""
-                    data-content="此片文章主要是参考一片面经这里,进行的部分解答，最初的手写稿在2016年的3月和4月，最近重新... | 文月的博客 | Warren Liu&#39;s Blog " >
+                    data-content="题目：如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之... | 文月的博客 | Warren Liu&#39;s Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -341,13 +235,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2016/09/12/2016年9月12日视频面试总结/" data-toggle="tooltip" data-placement="top" title="2016年9月12日视频面试总结">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2016/09/09/剑指Offer-面试题16-反转链表/" data-toggle="tooltip" data-placement="top" title="剑指Offer-面试题16-反转链表">Next Post &rarr;</a>
+                            <a href="/2016/10/03/剑指Offer-面试题58-二叉树的下一个结点/" data-toggle="tooltip" data-placement="top" title="剑指Offer-面试题58-二叉树的下一个结点">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -356,9 +246,9 @@
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2016/09/11/Java面试基础知识总结/"
-                        data-title="Java面试基础知识"
-                        data-url="http://wenyueliu.com/2016/09/11/Java面试基础知识总结/" >
+                        data-thread-key="2016/10/03/剑指Offer-面试题-64-数据流中的中位数/"
+                        data-title="剑指Offer-面试题64-数据流中的中位数"
+                        data-url="http://wenyueliu.com/2016/10/03/剑指Offer-面试题-64-数据流中的中位数/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
@@ -384,9 +274,9 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#面试" title="面试">面试</a>
+                          <a class="tag" href="/tags/#剑指Offer" title="剑指Offer">剑指Offer</a>
                         
-                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                          <a class="tag" href="/tags/#算法" title="算法">算法</a>
                         
                     </div>
                 </section>
