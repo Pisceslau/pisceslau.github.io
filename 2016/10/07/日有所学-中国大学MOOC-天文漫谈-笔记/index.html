@@ -13,11 +13,11 @@
 
     <title>
         
-          剑指Offer-面试题58-二叉树的下一个结点 - 文月的博客 | Warren Liu&#39;s Blog
+          日有所学|中国大学MOOC-天文漫谈-笔记 - 文月的博客 | Warren Liu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://wenyueliu.com/2016/10/03/剑指Offer-面试题58-二叉树的下一个结点/">
+    <link rel="canonical" href="http://wenyueliu.com/2016/10/07/日有所学-中国大学MOOC-天文漫谈-笔记/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -162,16 +162,16 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#剑指Offer" title="剑指Offer">剑指Offer</a>
+                          <a class="tag" href="/tags/#MOOC" title="MOOC">MOOC</a>
                         
-                          <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                          <a class="tag" href="/tags/#天文" title="天文">天文</a>
                         
                     </div>
-                    <h1>剑指Offer-面试题58-二叉树的下一个结点</h1>
+                    <h1>日有所学|中国大学MOOC-天文漫谈-笔记</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Warren Liu on
-                        2016-10-03
+                        2016-10-07
                     </span>
                 </div>
             </div>
@@ -190,18 +190,34 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h2 id="题目："><a href="#题目：" class="headerlink" title="题目："></a>题目：</h2><p>给定一棵二叉树和其中的一个结点，如何找出中序遍历顺序的下一个结点？树中的结点除了有两个分别指向左右子结点的指针以外，还有一个指向父结点的指针。</p>
-<h2 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h2><ol>
-<li><p>如果一个结点有右子树，那么它的下一个结点就是它的右子树的最左子结点。</p>
-</li>
-<li><p>（1）如果一个结点没有右子树，并且这个结点是它父结点的左子结点。那么它的下一个结点就是它的父结点。</p>
-<p>（2）如果一个结点没有右子树，并且这个结点是它父结点的右子结点。那么我们可以沿着父结点的指针一路向上遍历，直到我们找到一个结点，这个结点是它父结点的左子结点。我们就停止，这个结点的父结点就是我们找到的下一个结点。之所以如此是因为：这个点是父结点的左子结点说明这结点开始是一个子树。根据中序遍历下一个自然是根了，也就是父结点。</p>
-</li>
-</ol>
-<h2 id="参考代码："><a href="#参考代码：" class="headerlink" title="参考代码："></a>参考代码：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> Algorithm;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by Lunar on 2016/3/29.</div><div class="line"> * 剑指Offer第五十八题：二叉树的下一个结点</div><div class="line"> * 题目：给定一棵二叉树和其中的一个结点，如何找出中序遍历顺序的下一个结点？树中的结点除了有二个分别指向</div><div class="line"> * 左右子结点的指针外，还有一个指向父结点的指针。</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GetNext</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">static</span> BinaryTreeNode <span class="title">getNext</span><span class="params">(BinaryTreeNode node)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (node == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        <span class="comment">//如果一个结点的右子树存在，则该结点的右子树的最左结点是其的下一个结点</span></div><div class="line">        BinaryTreeNode next = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">if</span> (node.right != <span class="keyword">null</span>) &#123;</div><div class="line">            BinaryTreeNode nodeRight = node.right;</div><div class="line">            <span class="keyword">while</span> (nodeRight.left != <span class="keyword">null</span>) &#123;</div><div class="line">                nodeRight = nodeRight.left;</div><div class="line">            &#125;</div><div class="line">            next = nodeRight;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (node.parent != <span class="keyword">null</span>) &#123;</div><div class="line">            BinaryTreeNode current = node;</div><div class="line">            BinaryTreeNode nodeParent = node.parent;</div><div class="line">            <span class="comment">//当结点父结点存在并且当前结点是父结点的右子结点。向上遍历到某个父结点是作为另外一个父结点的左子点时候</span></div><div class="line">            <span class="keyword">while</span> (nodeParent != <span class="keyword">null</span> &amp;&amp; current == nodeParent.right) &#123;</div><div class="line">                current = nodeParent;</div><div class="line">                nodeParent = nodeParent.parent;</div><div class="line">            &#125;</div><div class="line">            next = nodeParent;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> next;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        BinaryTreeNode root = <span class="keyword">new</span> BinaryTreeNode(<span class="number">8</span>);</div><div class="line">        BinaryTreeNode t1 = <span class="keyword">new</span> BinaryTreeNode(<span class="number">6</span>);</div><div class="line">        BinaryTreeNode t2 = <span class="keyword">new</span> BinaryTreeNode(<span class="number">10</span>);</div><div class="line">        BinaryTreeNode t3 = <span class="keyword">new</span> BinaryTreeNode(<span class="number">5</span>);</div><div class="line">        BinaryTreeNode t4 = <span class="keyword">new</span> BinaryTreeNode(<span class="number">7</span>);</div><div class="line">        BinaryTreeNode t5 = <span class="keyword">new</span> BinaryTreeNode(<span class="number">9</span>);</div><div class="line">        BinaryTreeNode t6 = <span class="keyword">new</span> BinaryTreeNode(<span class="number">11</span>);</div><div class="line">        root.setLeft(t1);</div><div class="line">        root.setRight(t2);</div><div class="line">        t1.setLeft(t3);</div><div class="line">        t1.setRight(t4);</div><div class="line">        t2.setLeft(t5);</div><div class="line">        t2.setRight(t6);</div><div class="line">        <span class="comment">//设置父结点指针</span></div><div class="line">        t3.setParent(t1);</div><div class="line">        t4.setParent(t1);</div><div class="line"></div><div class="line">        t5.setParent(t2);</div><div class="line">        t6.setParent(t2);</div><div class="line"></div><div class="line">        t1.setParent(root);</div><div class="line">        t2.setParent(root);</div><div class="line">        <span class="comment">//使用getValue,输出结点存储的值</span></div><div class="line">        System.out.println(getNext(root).getValue());</div><div class="line">        System.out.println(getNext(t4).getValue());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="后记："><a href="#后记：" class="headerlink" title="后记："></a>后记：</h2><ol>
-<li>本代码中的<code>else if</code>语句相当于思路中的第二种情况，因为有个while循环中的判断，判断里说是当前结点是父结点的右结点的时候进行的动作，若是左子结点，无论是直接就是左子结点还是一路向上到达左子结点都会执行<code>node = nodeParent;</code>的语句的。</li>
-</ol>
+                <p>最近没事的时候都会看一些MOOC,或者公开课，主要的课程来自于Coursera、中国大学mooc、学堂在线、网易公开课等。</p>
+<p>今天就看了<em>中国大学MOOC</em>上的<em>天文漫谈</em>课程，对于天文的一些基础知识，我还是比较感兴趣的，特此学习一下，也是丰富下自己知识面的目的。</p>
+<p>课程第一课主要是以一首诗歌来引起我们对于宇宙天文之美的兴趣。这首诗我们初中都学过，就是郭沫若的《天上的街市》。</p>
+<blockquote>
+<p>远远的街灯明了，</p>
+<p>好像闪着无数的明星。</p>
+<p>天上的明星现了，</p>
+<p>好像是点着无数的街灯。</p>
+<p>我想那缥缈的空中，</p>
+<p>定然有美丽的街市。</p>
+<p>街市上陈列的一些物品，</p>
+<p>定然是世上没有的珍奇。</p>
+<p>你看，那浅浅的天河，</p>
+<p>定然是不甚宽广。</p>
+<p>那隔河的牛郎织女，</p>
+<p>定能够骑着牛儿来往。</p>
+<p>我想他们此刻，</p>
+<p>定然在天街闲游。</p>
+<p>不信，请看那朵流星，</p>
+<p>那怕是他们提着灯笼在走。</p>
+</blockquote>
+<p>课程【序】天上的街市，主要写了宇宙的尺度之大，无论是时间还是空间。人类的历史相对于其来说无异于沧海一粟了，甚至对于宇宙来说，微不足道。</p>
+<h2 id="宇宙："><a href="#宇宙：" class="headerlink" title="宇宙："></a>宇宙：</h2><p>战国诸子百家之一的尸子（尸佼）曾云：“四方上下曰宇，往古来今曰宙”。看来古人也有对于一些未知也有自己的直觉和观点。四方可以认为是空间，往古来今很明显是时间了。宇宙可认为是时间与空间的总和了。宇宙年龄约为138.2亿年。</p>
+<h2 id="天文单位、光年"><a href="#天文单位、光年" class="headerlink" title="天文单位、光年"></a>天文单位、光年</h2><p>一个天文单位（AU， Astronomical Unit）为日地平均距离，天文常数一，约为1.50亿公里（千米）。太阳光到达地球约为8分18秒。</p>
+<p>一光年为一年里光在宇宙中的距离约为9.5万亿公里 ，约为6.3万天文单位。</p>
+<h2 id="天体亮度："><a href="#天体亮度：" class="headerlink" title="天体亮度："></a>天体亮度：</h2><p>古希腊天文学家依巴谷把肉眼可见恒星亮度分为六等。近代以来规定一等比六等要亮100倍，越亮等数越来越小，甚至可以为负数。</p>
+<hr>
+<p>​                                                                                                                                                           完成于10.7.2016 待更</p>
 
 
                 <hr>
@@ -211,11 +227,11 @@
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="2016/10/03/剑指Offer-面试题58-二叉树的下一个结点/"
-                    data-title="剑指Offer-面试题58-二叉树的下一个结点"
-                    data-url="http://wenyueliu.com/2016/10/03/剑指Offer-面试题58-二叉树的下一个结点/"
+                    data-thread-key="2016/10/07/日有所学-中国大学MOOC-天文漫谈-笔记/"
+                    data-title="日有所学|中国大学MOOC-天文漫谈-笔记"
+                    data-url="http://wenyueliu.com/2016/10/07/日有所学-中国大学MOOC-天文漫谈-笔记/"
                     data-images=""
-                    data-content="题目：给定一棵二叉树和其中的一个结点，如何找出中序遍历顺序的下一个结点？树中的结点除了有两个分... | 文月的博客 | Warren Liu&#39;s Blog " >
+                    data-content="最近没事的时候都会看一些MOOC,或者公开课，主要的课程来自于Coursera、中国大学moo... | 文月的博客 | Warren Liu&#39;s Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -233,13 +249,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2016/10/03/剑指Offer-面试题-64-数据流中的中位数/" data-toggle="tooltip" data-placement="top" title="剑指Offer-面试题64-数据流中的中位数">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2016/10/03/剑指Offer-面试题59-对称的二叉树/" data-toggle="tooltip" data-placement="top" title="剑指Offer-面试题59-对称的二叉树">Next Post &rarr;</a>
+                            <a href="/2016/10/03/剑指Offer-面试题-64-数据流中的中位数/" data-toggle="tooltip" data-placement="top" title="剑指Offer-面试题64-数据流中的中位数">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -248,9 +260,9 @@
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2016/10/03/剑指Offer-面试题58-二叉树的下一个结点/"
-                        data-title="剑指Offer-面试题58-二叉树的下一个结点"
-                        data-url="http://wenyueliu.com/2016/10/03/剑指Offer-面试题58-二叉树的下一个结点/" >
+                        data-thread-key="2016/10/07/日有所学-中国大学MOOC-天文漫谈-笔记/"
+                        data-title="日有所学|中国大学MOOC-天文漫谈-笔记"
+                        data-url="http://wenyueliu.com/2016/10/07/日有所学-中国大学MOOC-天文漫谈-笔记/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
@@ -276,9 +288,9 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#剑指Offer" title="剑指Offer">剑指Offer</a>
+                          <a class="tag" href="/tags/#MOOC" title="MOOC">MOOC</a>
                         
-                          <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                          <a class="tag" href="/tags/#天文" title="天文">天文</a>
                         
                     </div>
                 </section>
