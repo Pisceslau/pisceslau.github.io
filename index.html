@@ -181,6 +181,30 @@
 
 <div class="post-preview">
 
+    <a href="/2016/10/13/剑指Offer-面试题31-连续子数组的最大和/">
+        <h2 class="post-title">
+            剑指Offer-面试题31-连续子数组的最大和
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            题目:输入一个整型数组，数组里有正数也有负数。数组中一个或连续的多个整数组成一个子数组。求所有子数组的和的最大值。要求时间复杂度为O(n)。
+思路：
+如果现在的和curSum是负的，那么它加上一个数array[i]会比array[i]更小，无论array[i]是正数还是负数。那么把curSum赋值为array[i]。和就更大了。
+如果现在的和curSum是正数，那么和就加上此刻遍历到的arr......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Warren Liu on
+        2016-10-13
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2016/10/13/数据库-数据库系统概述/">
         <h2 class="post-title">
             数据库-数据库系统概述、数据模型
@@ -391,29 +415,6 @@
 5 7 9 11
 
 思路:本题目与本博客的剑指Offer-面试题23-从上到下打印二叉树的思路其实差不多，代码也差不多。唯一的不同在于为了每一层一行输出，我们添加了二个变量，一个变量toBePrinted表示当前层中还没有打印（也就是本层待打印）的结点数，一个变量......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Warren Liu on
-        2016-10-01
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/10/01/剑指Offer-面试题23-从上往下打印二叉树-按层次遍历二叉树/">
-        <h2 class="post-title">
-            剑指Offer-面试题23-从上往下打印二叉树(按层次遍历二叉树)
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            题目:从上往下打印出二叉树的每个结点，同一层的结点按照从左向右的顺序打印，例如输入图中的二叉树，则依次打印出8,6,10,5,7,9,1。
-思路:本题主要考察二叉树的遍历算法中的按层次遍历，主要思想是：使用一个队列，当我们每打印一个结点的时候，如果该结点有子结点则把子节点加入队列的末尾，接下来从队列头取出最早进入队列的结点，重复前面的操作，直到队列中的所有的结点被打印出来为止。
-参考代码:1......
         </div>
     </a>
     <p class="post-meta">

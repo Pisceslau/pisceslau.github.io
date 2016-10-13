@@ -13,11 +13,11 @@
 
     <title>
         
-          数据库-数据库系统概述、数据模型 - 文月的博客 | Warren Liu&#39;s Blog
+          剑指Offer-面试题31-连续子数组的最大和 - 文月的博客 | Warren Liu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://wenyueliu.com/2016/10/13/数据库-数据库系统概述/">
+    <link rel="canonical" href="http://wenyueliu.com/2016/10/13/剑指Offer-面试题31-连续子数组的最大和/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -162,10 +162,12 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#数据库" title="数据库">数据库</a>
+                          <a class="tag" href="/tags/#剑指Offer" title="剑指Offer">剑指Offer</a>
+                        
+                          <a class="tag" href="/tags/#算法" title="算法">算法</a>
                         
                     </div>
-                    <h1>数据库-数据库系统概述、数据模型</h1>
+                    <h1>剑指Offer-面试题31-连续子数组的最大和</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Warren Liu on
@@ -188,53 +190,15 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>最近复习数据库的一些相关知识，特此写一些博客，以示记录。</p>
-<h2 id="一、数据库系统："><a href="#一、数据库系统：" class="headerlink" title="一、数据库系统："></a>一、数据库系统：</h2><p>数据库系统一般有<strong>数据库、数据库管理系统（DBMS）及其开发工具，应用系统，数据库管理员（DBA）</strong>构成。</p>
-<p>数据库管理结束经历了三个阶段，分别是：</p>
-<ol>
-<li><p>人工管理阶段：人工管理阶段采用批处理，数据不保存，应用程序管理数据、数据不共享、数据不具有独立性。</p>
-</li>
-<li><p>文件系统阶段：存取单位为记录，数据可长期存储。由文件系统管理数据，共享性差，冗余度大，数据独立性差。</p>
-</li>
-<li><p>数据库系统：</p>
-<p>数据结构化（整体数据结构化，与文件系统有本质的区别、数据之间有联系）。</p>
-<p>数据共享性高，冗余度低，易扩充。</p>
-<p>数据独立性高（物理独立性：用户程序与存储在磁盘中的数据相互独立；逻辑独立性：用户的应用程序与数据库的逻辑结构是相互独立的）。</p>
-<p>数据由DBMS统一管理和控制。</p>
-</li>
+                <h2 id="题目"><a href="#题目" class="headerlink" title="题目:"></a>题目:</h2><p>输入一个整型数组，数组里有正数也有负数。数组中一个或连续的多个整数组成一个子数组。求所有子数组的和的最大值。要求时间复杂度为O(n)。</p>
+<h2 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h2><ol>
+<li>如果现在的和<code>curSum</code>是负的，那么它加上一个数<code>array[i]</code>会比<code>array[i]</code>更小，无论<code>array[i]</code>是正数还是负数。那么把<code>curSum</code>赋值为<code>array[i]</code>。和就更大了。</li>
+<li>如果现在的和<code>curSum</code>是正数，那么和就加上此刻遍历到的<code>array[i]</code>。</li>
+<li>每次的<code>curSum</code>和<code>greatestSum</code>相比，若大于<code>greatestSum</code>，那么<code>greatestSum</code>更新为<code>curSum</code>。</li>
 </ol>
-<p>数据库是长期存储在计算机内有组织的、大量的共享的数据集合。它可以供各种用户共享，具有最小冗余度和较高的数据独立性。</p>
-<p><strong>数据库系统模式的概念</strong>：模式是数据库系统中全体数据的逻辑结构和特征的描述，它仅仅涉及到型的描述，不涉及到具体的值。模式的一个具体值称为模式的一个实例。模式相对是静止的，实例则是相对变动的。模式反映数据的结构和联系，实例反映数据库某一个时刻的状态。</p>
-<p><strong>数据库系统的三级模式结构：</strong>外模式-模式-内模式。</p>
-<p><strong>外模式</strong>：也称子模式或者用户模式。是数据库用户能够看见和使用的局部数据的逻辑结构和特征的描述。外模式通常是模式的子集，一个数据库可以有多个外模式。一个应用程序只能使用一个外模式。</p>
-<p><strong>模式</strong>：也称逻辑模式，是数据库系统中全体数据的逻辑结构和特征的描述，是所有用户的公共数据视图。一个数据库只有一个模式。</p>
-<p><strong>内模式:</strong> 也称存储模式，一个数据库只有一个内模式。是数据物理结构和存储方式的描述。是数据在数据库内部的表示方式。</p>
-<p><img src="http://ocnx69jd6.bkt.clouddn.com/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%89%E7%BA%A7%E6%98%A0%E5%B0%84%E5%9B%BE.jpg" alt="数据库系统三级模式结构"></p>
-<p><strong>数据库系统的二级映像功能与数据独立性</strong></p>
-<p>这二层映像保证了数据库系统中数据能够具有较高的逻辑独立性和物理独立性。</p>
-<p>外模式/模式映像：模式描述的是数据的全局逻辑结构，外模式描述的是数据的局部逻辑结构。对应于同一个模式可以有任意多个外模式。当模式改变，由数据库管理员对各个外模式/内模式的映像作相应改变可以使外模式保持不变。应用程序是依据数据的外模式编写的，从而应用程序可以不必修改，保证了数据与程序的逻辑独立性。</p>
-<p>模式/内模式映像：因为数据库只有一个内模式和一个外模式，所以这个映像是唯一的，它定义了数据全局逻辑结构与存储结构之间的对应关系。</p>
-<h2 id="二、数据模型"><a href="#二、数据模型" class="headerlink" title="二、数据模型"></a>二、数据模型</h2><p>数据模型：对现实世界数据特征的抽象。用来描述数据，组织数据，和对数据进行操作。是数据库系统的核心和基础。</p>
-<p>第一类：概念模型，是站在用户的观点来对数据和信息建模，也称信息模型。</p>
-<p>是现实世界到机器世界的一个中间层次。概念模型的也一种表示方法是E-R图：</p>
-<p>实体：矩形。</p>
-<p>属性：椭圆。</p>
-<p>联系：菱形。</p>
-<p>第二类：逻辑模型、物理模型。</p>
-<ol>
-<li>逻辑模型包含层次、网状、关系、面向对象、对象关系模型等。按计算机的观点进行数据建模 ，主要用于DBMS实现</li>
-</ol>
-<p>层次：没有一个子女结点可以脱离双亲记录值而独立存在。只能处理一对多。若要处理多对多则使用冗余结点法或者虚拟结点法。存储使用邻接法（类似树按层次存于数组中）或者链接法（类似链表，每个结点的二个指针一个指向最左子女，一个指向最近兄弟。）</p>
-<p>关系：建立在严格的数学概念基础之上。一个关系对应一张二维表。</p>
-<p>​    元组：表中的一行。</p>
-<p>​    属性：表中的一列。</p>
-<p>​    码；表中某个属性组。可以唯一的确定一个元组。</p>
-<p>​    域：属性的取值范围。    </p>
-<p>​    关系模式：对关系的描述。</p>
-<p>​    分量：元组中的一个属性值。</p>
-<p>​    关系：对应一张表，分量必须是不可分的数据项</p>
-<p>2.物理模型，是对数据最低层的抽象。描述数据在系统内部的表示方式和存取方法，在磁盘或磁带上的存取方式和存取方法，，是面向计算机系统的。</p>
-<h2 id="后记："><a href="#后记：" class="headerlink" title="后记："></a>后记：</h2><p>这是数据库的第一篇文章，主要参考教材《数据库系统概论》（第四版，王珊，萨师煊 著）。</p>
+<h2 id="参考代码："><a href="#参考代码：" class="headerlink" title="参考代码："></a>参考代码：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> Algorithm; </div><div class="line"> </div><div class="line"><span class="comment">/** </span></div><div class="line"> * Created by Lunar on 2016/3/21. </div><div class="line"> * 剑指Offer第三十一题：连续子数组的最大和 </div><div class="line"> * 输入的整型数组存在正负数，数组中一个非或多个整数组成一个子数组，求所有子数组的和的最大值，要求时间复杂度为O(n) </div><div class="line"> * 长度为n的子数组总共有n(n+1)/2个子数组 </div><div class="line"> */ </div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FindGreatestSumOfSubArray</span> </span>&#123; </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">findGreatestSumOfArray</span><span class="params">(<span class="keyword">int</span>[] array)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (array == <span class="keyword">null</span> || array.length &lt;= <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        <span class="comment">//此时的数组和 </span></div><div class="line">        <span class="keyword">int</span> currentSum = <span class="number">0</span>;</div><div class="line">        <span class="comment">//此时的历史最大子数组和 </span></div><div class="line">        <span class="keyword">int</span> greatestSum = <span class="number">0x80000000</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; array.length; i++) &#123;</div><div class="line">            <span class="comment">//如果数组和小于此时的一个数组元素， </span></div><div class="line">            <span class="comment">// 则之前的值肯定不是最大子数组和，作废， </span></div><div class="line">            <span class="comment">//并用此时的元素作为和 </span></div><div class="line">            <span class="keyword">if</span> (currentSum &lt;= <span class="number">0</span>) &#123;</div><div class="line"> </div><div class="line">                currentSum = array[i];</div><div class="line">            &#125; <span class="keyword">else</span> &#123; </div><div class="line">                currentSum += array[i];</div><div class="line">            &#125; </div><div class="line">            <span class="keyword">if</span> (currentSum &gt; greatestSum) &#123;</div><div class="line">                greatestSum = currentSum;</div><div class="line">            &#125; </div><div class="line">        &#125; </div><div class="line">        <span class="keyword">return</span> greatestSum;</div><div class="line">    &#125; </div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span>[] a = &#123;<span class="number">1</span>, -<span class="number">2</span>, <span class="number">3</span>, <span class="number">10</span>, -<span class="number">4</span>, <span class="number">7</span>, <span class="number">2</span>, -<span class="number">5</span>&#125;;</div><div class="line">        System.out.printf(<span class="string">"The greatest sum of subArray is %s ."</span>, findGreatestSumOfArray(a));</div><div class="line">    &#125; </div><div class="line"> </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>通过牛客网AC。</p>
+<h2 id="后记："><a href="#后记：" class="headerlink" title="后记："></a>后记：</h2><p><code>greatestSum</code>初始值为<code>0x80000000</code>为整型<code>int</code>的最小负数，也就是<code>Integer.MIN_VALUE</code>。即为<code>-2147483648</code>。</p>
 
 
                 <hr>
@@ -244,12 +208,11 @@
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="2016/10/13/数据库-数据库系统概述/"
-                    data-title="数据库-数据库系统概述、数据模型"
-                    data-url="http://wenyueliu.com/2016/10/13/数据库-数据库系统概述/"
+                    data-thread-key="2016/10/13/剑指Offer-面试题31-连续子数组的最大和/"
+                    data-title="剑指Offer-面试题31-连续子数组的最大和"
+                    data-url="http://wenyueliu.com/2016/10/13/剑指Offer-面试题31-连续子数组的最大和/"
                     data-images=""
-                    data-content="最近复习数据库的一些相关知识，特此写一些博客，以示记录。
-一、数据库系统：数据库系统一般有数据... | 文月的博客 | Warren Liu&#39;s Blog " >
+                    data-content="题目:输入一个整型数组，数组里有正数也有负数。数组中一个或连续的多个整数组成一个子数组。求所有... | 文月的博客 | Warren Liu&#39;s Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -267,13 +230,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2016/10/13/剑指Offer-面试题31-连续子数组的最大和/" data-toggle="tooltip" data-placement="top" title="剑指Offer-面试题31-连续子数组的最大和">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2016/10/09/剑指Offer-面试题21-包含min函数的栈/" data-toggle="tooltip" data-placement="top" title="剑指Offer-面试题21-包含min函数的栈">Next Post &rarr;</a>
+                            <a href="/2016/10/13/数据库-数据库系统概述/" data-toggle="tooltip" data-placement="top" title="数据库-数据库系统概述、数据模型">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -282,9 +241,9 @@
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2016/10/13/数据库-数据库系统概述/"
-                        data-title="数据库-数据库系统概述、数据模型"
-                        data-url="http://wenyueliu.com/2016/10/13/数据库-数据库系统概述/" >
+                        data-thread-key="2016/10/13/剑指Offer-面试题31-连续子数组的最大和/"
+                        data-title="剑指Offer-面试题31-连续子数组的最大和"
+                        data-url="http://wenyueliu.com/2016/10/13/剑指Offer-面试题31-连续子数组的最大和/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
@@ -310,7 +269,9 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#数据库" title="数据库">数据库</a>
+                          <a class="tag" href="/tags/#剑指Offer" title="剑指Offer">剑指Offer</a>
+                        
+                          <a class="tag" href="/tags/#算法" title="算法">算法</a>
                         
                     </div>
                 </section>
