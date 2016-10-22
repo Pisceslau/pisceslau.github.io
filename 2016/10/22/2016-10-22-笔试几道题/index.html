@@ -13,11 +13,11 @@
 
     <title>
         
-          Java面试基础知识 - 文月的博客 | Warren Liu&#39;s Blog
+          2016.10.22-笔试几道题 - 文月的博客 | Warren Liu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://wenyueliu.com/2016/09/11/Java面试基础知识总结/">
+    <link rel="canonical" href="http://wenyueliu.com/2016/10/22/2016-10-22-笔试几道题/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -162,16 +162,14 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#面试" title="面试">面试</a>
-                        
-                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                          <a class="tag" href="/tags/#笔试" title="笔试">笔试</a>
                         
                     </div>
-                    <h1>Java面试基础知识</h1>
+                    <h1>2016.10.22-笔试几道题</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Warren Liu on
-                        2016-09-11
+                        2016-10-22
                     </span>
                 </div>
             </div>
@@ -190,126 +188,98 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>此片文章主要是参考一片面经<a href="https://www.nowcoder.com/discuss/3043" target="_blank" rel="external">这里</a>,进行的部分解答，最初的手写稿在2016年的3月和4月，最近重新整理准备相关的校招面试，发布在此。</p>
-<h2 id="Java基础："><a href="#Java基础：" class="headerlink" title="Java基础："></a>Java基础：</h2><ol>
-<li>九种基本数据类型的大小以及它们的封装类。</li>
+                <p>今天做了二个公司校园宣讲会，其中有几道题目不是很会，特此搜索整理下来。</p>
+<p>一、 HTTP请求的几个方法</p>
+<ol>
+<li>GET :通常用于请求服务器发送某个资源。</li>
+<li>HEAD: 与GET类似，但服务器在响应中只返回首部，不会返回实体的主体部分。</li>
+<li>PUT: 向服务器上的资源（如文件）中存储数据</li>
+<li>POST: 向服务器输入（<strong>发送</strong>）数据。发送表单数据。</li>
+<li>TRACE: 允许客户端在最终将请求发送给服务器时候，看看它变成了什么样子。</li>
+<li>OPTIONS: 请求Web服务器告知其支持的各种功能。可以询问服务器通常支持哪些方法。</li>
+<li>DELETE: 请服务器删除URL所指定的资源。不一定会执行。</li>
 </ol>
+<p>二、HTTP请求的几个状态码</p>
+<p>301，302 都是HTTP状态的编码，都代表着某个URL发生了转移，不同之处在于：</p>
+<p>301 redirect: 301 代表永久性转移(Permanently Moved)，</p>
+<p>302 redirect: 302 代表暂时性转移(Temporarily Moved )。</p>
+<p>三、关于Cookie</p>
+<p>Cookie，服务端生成，总是保存在客户端中，按在客户端中的存储位置，可分为内存Cookie和硬盘Cookie。内存Cookie由浏览器维护，保存在内存中，浏览器关闭后就消失了，其存在时间是短暂的。硬盘Cookie保存在硬盘里，有一个过期时间，除非用户手工清理或到了过期时间，硬盘Cookie不会被删除，其存在时间是长期的。所以，按存在时间，可分为非持久Cookie和持久Cookie。</p>
+<p>四、iOS开发中#include/#import区别</p>
+<ol>
+<li><p>一般来说，导入objective c的头文件时用#import，包含c/c++头文件时用#include。</p>
+</li>
+<li><p>#import 确定一个文件只能被导入一次，这使你在递归包含中不会出现问题.所以，#import比起#include的好处就是不会引起交叉编译。</p>
+<blockquote>
+<p>注：此为iOS中涉及的内容。</p>
+</blockquote>
+</li>
+</ol>
+<p>五、线程、进程共享</p>
+<p><strong>线程共享的环境包括：进程代码段、进程的公有数据(利用这些共享的数据，线程很容易的实现相互之间的通讯)、进程打开的文件描述符、信号的处理器、进程的当前目录和进程用户ID与进程组ID。</strong></p>
+<pre><code>进程拥有这许多共性的同时，还拥有自己的个性。有了这些个性，线程才能实现并发性。这些个性包括：
+
+1.线程ID
+  每个线程都有自己的线程ID，这个ID在本进程中是唯一的。进程用此来标
+</code></pre><p>   识线程。 </p>
+<pre><code>2.寄存器组的值
+   由于线程间是并发运行的，每个线程有自己不同的运行线索，当从一个线
+</code></pre><p>   程切换到另一个线程上 时，必须将原有的线程的寄存器集合的状态保存，以便</p>
+<p>   将来该线程在被重新切换到时能得以恢复。</p>
+<pre><code>3.线程的堆栈
+   堆栈是保证线程独立运行所必须的。
+   线程函数可以调用函数，而被调用函数中又是可以层层嵌套的，所以线程
+</code></pre><p>   必须拥有自己的函数堆栈， 使得函数调用可以正常执行，不受其他线程的影</p>
+<p>   响。</p>
+<pre><code>4.错误返回码
+   由于同一个进程中有很多个线程在同时运行，可能某个线程进行系统调用
+</code></pre><p>   后设置了errno值，而在该 线程还没有处理这个错误，另外一个线程就在此时</p>
+<p>   被调度器投入运行，这样错误值就有可能被修改。<br>       所以，不同的线程应该拥有自己的错误返回码变量。</p>
+<pre><code>5.线程的信号屏蔽码
+   由于每个线程所感兴趣的信号不同，所以线程的信号屏蔽码应该由线程自己管理。但所有的线程都共享同样的信号处理器。
+
+6.线程的优先级
+   由于线程需要像进程那样能够被调度，那么就必须要有可供调度使用的参数，这个参数就是线程的优先级。涉及多线程程序涉及的时候经常会出现一些令人难以思议的事情，用堆和栈分配一个变量可能在以后的执行中产生意想不到的结果，而这个结果的表现就是内存的非法被访问，导致内存的内容被更改。  
+</code></pre><p>理解这个现象的两个基本概念是：在一个进程的线程共享堆区，而进程中的线程各自维持自己堆栈。 在 windows 等平台上，不同线程缺省使用同一个堆，所以用 C 的 malloc （或者 windows 的 GlobalAlloc）分配内存的时候是使用了同步保护的。如果没有同步保护，在两个线程同时执行内存操作的时候会产生竞争条件，可能导致堆内内存管理混乱。比如两个线程分配了统一块内存地址，空闲链表指针错误等。  Symbian 的线程一般使用独立的堆空间。这样每个线程可以直接在自己的堆里分配和释放，可以减少同步所引入的开销。当线程退出的时候，系统直接回收线程的堆空间，线程内没有释放的内存空间也不会造成进程内的内存泄漏。  但是两个线程使用共用堆的时候，就必须用 critical section 或者 mutex 进行同步保护。否则程序崩溃时早晚的事。如果你的线程需要在共用堆上无规则的分配和释放任何数量和类型的对象，可以定制一个自己的 allcator，在 allocator 内部使用同步保护。线程直接使用这个 allocator 分配内存就可以了。这相当于实现自己的 malloc，free。但是更建议你重新审查一下自己的系统，因为这种情况大多数是不必要的。经过良好的设计，线程的本地堆应该能够满足大多数对象的需求。如果有某一类对象需要在共享堆上创建和共享，这种需求是比较合理的，可以在这个类的 new 和 delete 上实现共享保护。 </p>
+<p><a href="https://www.nowcoder.com/questionTerminal/74bb7a1b3d5640e9aedea219dcabfeaa" target="_blank" rel="external">参考</a></p>
+<p>六、堆排序复杂度</p>
 <table>
 <thead>
 <tr>
-<th>基本类型</th>
-<th style="text-align:center">位数</th>
-<th style="text-align:center">字节数</th>
-<th style="text-align:center">包装类</th>
+<th>数据结构</th>
+<th><a href="https://zh.wikipedia.org/wiki/%E6%95%B8%E7%B5%84" target="_blank" rel="external">数组</a></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>int</td>
-<td style="text-align:center">32</td>
-<td style="text-align:center">4</td>
-<td style="text-align:center">Integer</td>
+<td>时间复杂度</td>
+<td>O(nlgn)</td>
 </tr>
 <tr>
-<td>short</td>
-<td style="text-align:center">16</td>
-<td style="text-align:center">2</td>
-<td style="text-align:center">Short</td>
+<td>最优时间复杂度</td>
+<td>O(nlgn)</td>
 </tr>
 <tr>
-<td>long</td>
-<td style="text-align:center">64</td>
-<td style="text-align:center">8</td>
-<td style="text-align:center">Long</td>
+<td>平均时间复杂度</td>
+<td>O(nlgn)</td>
 </tr>
 <tr>
-<td>float</td>
-<td style="text-align:center">32</td>
-<td style="text-align:center">4</td>
-<td style="text-align:center">Float</td>
-</tr>
-<tr>
-<td>double</td>
-<td style="text-align:center">64</td>
-<td style="text-align:center">8</td>
-<td style="text-align:center">Double</td>
-</tr>
-<tr>
-<td>boolean</td>
-<td style="text-align:center">true/false</td>
-<td style="text-align:center">1或者4</td>
-<td style="text-align:center">Boolean</td>
-</tr>
-<tr>
-<td>char</td>
-<td style="text-align:center">16</td>
-<td style="text-align:center">2</td>
-<td style="text-align:center">Character</td>
-</tr>
-<tr>
-<td>void</td>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td style="text-align:center">Void</td>
+<td>空间复杂度</td>
+<td>O(n) total,O(1) 辅助</td>
 </tr>
 </tbody>
 </table>
-<p>总结：16位的有char,short. 32位的float，int 。64位的double,long.关于boolean请见<a href="http://www.jianshu.com/p/2f663dc820d0" target="_blank" rel="external">这篇</a>，</p>
-<ol>
-<li><p>equals()与==区别</p>
-<p>（1）基本类型，==是比较值是否相等</p>
-<p>（2）复合类型，==比较地址（引用）。Object类中的equals方法内部是==实现的也就是说默认的equals是比较二个对象引用是否相等。而许多类，如String，Integer等包装类，Date类覆盖了Object类的这个equals方法。String的equals就是比较二个字符串值是否相等了。<a href="http://www.cnblogs.com/zhxhdean/archive/2011/03/25/1995431.html" target="_blank" rel="external">参考链接</a></p>
-</li>
-<li><p>Object有哪些公用方法？</p>
-<p>clone,equals,hashcode,notify,notifyAll,finalize,wait(有无参数),toString。</p>
-</li>
-<li><p>Java的四种引用强软弱虚</p>
-<p>强：使用最普遍的引用，如果一个对象是强引用的，那么GC绝不会回收，当内存空间不够，宁愿报OOM Error异常，终止程序，也不会回收强引用来解决内存空间不够的问题。</p>
-<p>软：Soft，内存空间够则不回收，不够则回收。用来实现内存敏感的高速缓存。可以和引用队列联合使用。</p>
-<p>弱：Weak，更短暂的生命周期，GC管辖内存区域过程中，一旦发现弱引用对象则回收之。不管内存是否够。</p>
-<p>虚：Phantom，顾名思义，形同虚设，并不决定对象的生命周期，仅持虚引用和没有一样。任何时候都可能被回收，用途：跟踪对象被垃圾回收器回收的活动，虚引用必须和引用队列ReferenceQueue联合使用，GC回收一个对象发现还有虚引用，那么回收内存前会把其关联到引用队列 。</p>
-</li>
-<li><p>Hashcode的作用：</p>
-<p>函数返回散列值，也就是根据一定的规则把与对象有关的信息映射成为一个散列值，在集合中添加元素可以先看该元素的散列值，然后减少equals方法的调用次数，提高程序的效率，提高寻找对象的作用。</p>
-<p>两个对象相同则hashcode一样，两个hashcode相等，不一定说明它们是一个对象。但是hashcode不同必定二个对象是不同的。</p>
-<p>注意：重写equals方法必须也要重写hashcode方法！</p>
-</li>
-<li><p>ArrayList、LinkedList、Vector的区别</p>
-<p>三者都实现了java.util.List接口</p>
-<p>一、同步性：ArrayList、LinkedList不同步，非线程安全，Vector线程安全，同步、性能也就相对较低。</p>
-<p>二、数据增长：ArrayList增长为50%，Vector增长为原来的一倍因此适合大量的数据。</p>
-<p>三、检索与删除、增加性能：ArrayList/Vector在末尾增删复杂度O(1),检索指定的位置复杂度O(1),在其他地方增删复杂度O(n-i),之后的都要移动</p>
-<p>​        LinkedList:检索性能低（因为链标表的原因），O(i)增删的效率高（仅仅改变指针的指向）O(1)</p>
-<p>四、实现方式：ArrayList/Vector类似数组的方式。LinkedList是双向链表方式。</p>
-</li>
-<li><p>String、StringBuilder、StringBuffer的区别</p>
-<p>String不可变字符串，每次都是新建一个字符串，然后指针指向这个字符串。StringBuilder是线程不安全可变字符串的、StringBuffer是线程安全的可变字符串类。因为String每次都是新建字符串所以效率大多数低于StringBuffer.</p>
-<p>String s = “This”+”is”+”a String”;为什么比StringBuffer快呢？这是JVM对这种字符串字面值的拼接的优化。相当于一个“This is  a String”。String s = s1+s2+s3的方式则是按原来的方式（新建字符串）的方式。比StringBuffer的append拼接慢。</p>
-</li>
-<li><p>Map、Set、List、Queue、Stack特点</p>
-<p>Map是键值对存储。</p>
-<p>Set是不包含重复元素的集合。</p>
-<p>List(列表)： List的特征是其元素以线性方式存储，集合中可以存放重复对象。</p>
-<p>Queue是先进先出的队列。</p>
-<p>Stack后进先出的栈。</p>
-</li>
-<li><p>HashMap、HashTable区别</p>
-<p>HashMap是线程不安全、非同步的，键值允许为空（null）的，HashTable是线程安全、同步的、键值不允许为空的。</p>
-</li>
-<li><p>HashMap、ConcurrentHashMap的区别</p>
-<p>HashMap是线程不安全的，ConcurrentHashMap是线程安全的版本。HashTable的锁实现是对对象整体加锁。ConcurrentHashMap基于lock操作，锁住的不是整个对象。</p>
-</li>
-<li><p>TreeMap、HashMap、LinkedHashMap区别</p>
-<p>LinkedHashMap保存了插入的顺序。输出得到的输出顺序与输入一样，HashMap是随机存储。TreeMap实现了SortMap接口，按键值的升序排列。</p>
-<p>​                                                                                                       </p>
-<p>​                                                                        完成于9.11.2016，待更</p>
-<hr>
-<p>​</p>
-<p>​</p>
-<p>​</p>
-<p>​</p>
-</li>
-</ol>
+<p>七、循环队列元素个数计算</p>
+<p>队列头指针为front，队列尾指针为rear（指向队尾元素），after_rear为队尾元素的后一位置（按顺时针方向），队列容量为maxsize</p>
+<p>如果用 front == rear 来表示队列为空，也就是说front和rear指向同一个位置，那么：</p>
+<p>队列满时：（rear+1） mod maxsize == front</p>
+<p>队列中元素个数为：（rear-front+maxsize） mod maxsize</p>
+<p> 如果用 rear == （front-1+maxsize） mod maxsize 来表示队列为空，也就是说front指向rear的下一个位置，那么：</p>
+<p>队列满时：（after_rear+1) mod maxsize == front</p>
+<p>队列中元素个数为：（after_rear–front+maxsize） mod maxsize</p>
+<p>八、Java堆栈存放</p>
+<p>基本类型、引用在栈存放。new的对象和数组在堆存放。</p>
+<p>九、reverse字符串算法函数</p>
 
 
                 <hr>
@@ -319,11 +289,12 @@
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="2016/09/11/Java面试基础知识总结/"
-                    data-title="Java面试基础知识"
-                    data-url="http://wenyueliu.com/2016/09/11/Java面试基础知识总结/"
+                    data-thread-key="2016/10/22/2016-10-22-笔试几道题/"
+                    data-title="2016.10.22-笔试几道题"
+                    data-url="http://wenyueliu.com/2016/10/22/2016-10-22-笔试几道题/"
                     data-images=""
-                    data-content="此片文章主要是参考一片面经这里,进行的部分解答，最初的手写稿在2016年的3月和4月，最近重新... | 文月的博客 | Warren Liu&#39;s Blog " >
+                    data-content="今天做了二个公司校园宣讲会，其中有几道题目不是很会，特此搜索整理下来。
+一、 HTTP请求的几... | 文月的博客 | Warren Liu&#39;s Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -341,13 +312,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2016/09/12/2016年9月12日视频面试总结/" data-toggle="tooltip" data-placement="top" title="2016年9月12日视频面试总结">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2016/09/09/剑指Offer-面试题16-反转链表/" data-toggle="tooltip" data-placement="top" title="剑指Offer-面试题16-反转链表">Next Post &rarr;</a>
+                            <a href="/2016/10/21/算法-快速排序/" data-toggle="tooltip" data-placement="top" title="算法-快速排序">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -356,9 +323,9 @@
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="2016/09/11/Java面试基础知识总结/"
-                        data-title="Java面试基础知识"
-                        data-url="http://wenyueliu.com/2016/09/11/Java面试基础知识总结/" >
+                        data-thread-key="2016/10/22/2016-10-22-笔试几道题/"
+                        data-title="2016.10.22-笔试几道题"
+                        data-url="http://wenyueliu.com/2016/10/22/2016-10-22-笔试几道题/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
@@ -384,9 +351,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#面试" title="面试">面试</a>
-                        
-                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                          <a class="tag" href="/tags/#笔试" title="笔试">笔试</a>
                         
                     </div>
                 </section>
