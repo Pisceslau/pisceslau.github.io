@@ -13,11 +13,11 @@
 
     <title>
         
-          文月的博客 | Warren Liu&#39;s Blog
+          2016-10-26-笔试几道题 - 文月的博客 | Warren Liu&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://wenyueliu.com/tags/笔试/">
+    <link rel="canonical" href="http://wenyueliu.com/2016/10/27/2016-10-26-笔试几道题/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -144,7 +144,223 @@
 
 
     <!-- Main Content -->
-    <!-- Default Archive layout, we use archives instead. -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://wenyueliu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#笔试" title="笔试">笔试</a>
+                        
+                    </div>
+                    <h1>2016-10-26-笔试几道题</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Warren Liu on
+                        2016-10-27
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>今天晚上做了笔试，记录下几道题。</p>
+<ol>
+<li><p>堆排序的一趟</p>
+<p>堆排序的思路第一步是构造堆，首先按照原始的数组层级填入树中，然后从n/2处向下取证取得坐标的元素为根进行上浮或者下沉构造大或者小顶堆。</p>
+</li>
+<li><p>程序结果选择题：Java程序中函数String作为参数，数组作为参数的传值调用问题。</p>
+<p>程序如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Exa</span> </span>&#123;</div><div class="line">    String str = <span class="keyword">new</span> String(<span class="string">"good"</span>);</div><div class="line">    <span class="keyword">char</span>[] ch = &#123;<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>&#125;;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String... args)</span> </span>&#123;</div><div class="line">        Exa ex = <span class="keyword">new</span> Exa();</div><div class="line">        ex.change(ex.str, ex.ch);</div><div class="line">        System.out.print(ex.str + <span class="string">" and "</span>);</div><div class="line">        System.out.print(ex.ch);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">change</span><span class="params">(String str, <span class="keyword">char</span> ch[])</span> </span>&#123;</div><div class="line">        str = <span class="string">"test ok"</span>;</div><div class="line">        ch[<span class="number">0</span>] = <span class="string">'g'</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>结果如下</p>
+<blockquote>
+<p>good and gbc</p>
+</blockquote>
+<p>原因是因为Java函数传值调用，change函数有一个原来引用拷贝指向了good字符串，然后String不可变，这个拷贝引用指向了test ok字符串。原来的没有改变。数组拷贝的引用改变了指向的数组第一个元素的值。</p>
+</li>
+<li><p>二叉搜索树查找复杂度</p>
+<p>平均是O(lgn)，最坏O(n),最坏是退化成线性表有序。</p>
+</li>
+</ol>
+
+
+                <hr>
+
+                
+                <!-- 多说 Share start -->
+                </style>
+                <div class="ds-share"
+                    style="text-align: right"
+                    data-thread-key="2016/10/27/2016-10-26-笔试几道题/"
+                    data-title="2016-10-26-笔试几道题"
+                    data-url="http://wenyueliu.com/2016/10/27/2016-10-26-笔试几道题/"
+                    data-images=""
+                    data-content="今天晚上做了笔试，记录下几道题。
+
+堆排序的一趟
+堆排序的思路第一步是构造堆，首先按照原始的数... | 文月的博客 | Warren Liu&#39;s Blog " >
+                    <div class="ds-share-inline">
+                      <ul  class="ds-share-icons-16">
+                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                      </ul>
+                      <div class="ds-share-icons-more">
+                      </div>
+                    </div>
+                <hr>
+                </div>
+                <!-- 多说 Share end-->
+                
+
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/10/22/2016-10-22-笔试几道题/" data-toggle="tooltip" data-placement="top" title="2016.10.22-笔试几道题">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="2016/10/27/2016-10-26-笔试几道题/"
+                        data-title="2016-10-26-笔试几道题"
+                        data-url="http://wenyueliu.com/2016/10/27/2016-10-26-笔试几道题/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#笔试" title="笔试">笔试</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://cai-lei.com" target="_blank">蔡磊的博客</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = 'wenyueliu';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
 
     <!-- Footer -->
     <!-- Footer -->
